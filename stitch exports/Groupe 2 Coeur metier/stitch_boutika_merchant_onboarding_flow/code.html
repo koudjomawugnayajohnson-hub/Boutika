@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boutika - Product Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "outline-variant": "#c4c6cd",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-container": "#bbcae0",
+                        "surface-tint": "#515f74",
+                        "secondary-fixed": "#e1e2e4",
+                        "background": "#f9f9ff",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "error": "#ba1a1a",
+                        "primary-container": "#475569",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-primary-container": "#bbcae1",
+                        "on-primary-fixed": "#0d1c2e",
+                        "secondary-container": "#dee0e2",
+                        "on-secondary-container": "#606365",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d8e3fb",
+                        "on-primary-fixed-variant": "#3a485b",
+                        "on-background": "#111c2d",
+                        "primary": "#303e51",
+                        "primary-fixed-dim": "#b9c7df",
+                        "on-surface-variant": "#44474c",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777d",
+                        "on-surface": "#111c2d",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#5c5f60",
+                        "primary-fixed": "#d5e3fc",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-surface": "#263143",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#303e50",
+                        "surface-container-highest": "#d8e3fb",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "tertiary-container": "#475568",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b9c7df"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["IBM Plex Sans"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "mono-label": ["IBM Plex Sans"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["IBM Plex Sans"],
+                        "headline-xl": ["IBM Plex Sans"],
+                        "headline-md": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f9f9ff; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
+    </style>
+</head>
+<body class="text-on-background font-body-md h-screen flex overflow-hidden">
+<!-- SideNav (Desktop) -->
+<nav class="hidden md:flex flex-col h-full w-[240px] fixed left-0 top-0 border-r border-outline-variant bg-surface py-xl px-md space-y-sm z-40">
+<div class="px-md mb-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary">Management Suite</span>
+</div>
+<a class="flex items-center gap-md px-md py-sm cursor-pointer text-on-surface-variant hover:bg-surface-container-low transition-all rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm cursor-pointer text-on-surface-variant hover:bg-surface-container-low transition-all rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-label-md text-label-md">POS Terminal</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm cursor-pointer bg-secondary-container text-on-secondary-container font-bold rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-label-md text-label-md">Product Catalog</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm cursor-pointer text-on-surface-variant hover:bg-surface-container-low transition-all rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="low_priority">low_priority</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm cursor-pointer text-on-surface-variant hover:bg-surface-container-low transition-all rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Sales Records</span>
+</a>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col md:ml-[240px] h-full overflow-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface text-primary border-b border-outline-variant flex items-center justify-between px-margin-desktop py-md max-w-container-max mx-auto z-30">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md font-bold text-primary md:hidden">RetailPro Manager</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="Close up profile photo of a professional retail store manager, soft natural lighting, light neutral background, high quality portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4gUz7krEilptECaRDiQzZQoYldMfrRPvj5JPDVKiUSwXIThbm4e5jRgPJlV1tXwBIomwzBv077GLtoJgiYPW0izmQninpVudrNDINz2O1Ujjiab4sHh-eY_t56cFb0B3oYVAqTde-mIN-R7P84_OBbfUJMacxcLwOGDo39bLsEKaIpEb30qasmtggodi_seootJsj7IDBysE_Ed5ibIfxOCmPp0YHJr2l-moPefkbeeuSFdFCYlILg"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop pb-32 md:pb-margin-desktop">
+<div class="max-w-container-max mx-auto flex flex-col gap-xl">
+<!-- Header & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg md:font-headline-xl md:text-headline-xl text-on-background">Product Catalog</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your inventory, variations, and pricing.</p>
+</div>
+<div class="flex gap-sm w-full md:w-auto">
+<div class="relative flex-1 md:w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-xl pr-md py-sm border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" placeholder="Search products..." type="text"/>
+</div>
+<button class="bg-primary-container text-on-tertiary px-md py-sm rounded font-label-md text-label-md flex items-center gap-xs hover:bg-surface-tint transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Add Product</span>
+</button>
+</div>
+</div>
+<!-- Filters Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<div class="glass-card rounded-lg p-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">category</span>
+<div class="flex-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Category</label>
+<select class="w-full bg-transparent border-b border-outline-variant font-body-sm text-body-sm py-xs focus:outline-none focus:border-primary">
+<option>All Categories</option>
+<option>Apparel</option>
+<option>Accessories</option>
+</select>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">sell</span>
+<div class="flex-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Status</label>
+<select class="w-full bg-transparent border-b border-outline-variant font-body-sm text-body-sm py-xs focus:outline-none focus:border-primary">
+<option>Active</option>
+<option>Draft</option>
+<option>Out of Stock</option>
+</select>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center gap-sm md:col-span-2">
+<span class="material-symbols-outlined text-primary">tune</span>
+<div class="flex flex-wrap gap-xs">
+<span class="bg-surface-container px-sm py-xs rounded-full font-label-sm text-label-sm text-primary flex items-center gap-xs">Size: M <button><span class="material-symbols-outlined text-xs">close</span></button></span>
+<span class="bg-surface-container px-sm py-xs rounded-full font-label-sm text-label-sm text-primary flex items-center gap-xs">Material: Cotton <button><span class="material-symbols-outlined text-xs">close</span></button></span>
+<button class="text-primary font-label-sm text-label-sm hover:underline px-xs">Add Filter</button>
+</div>
+</div>
+</div>
+<!-- Product List / Table -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="p-md font-label-md text-label-md text-on-surface-variant">Product</th>
+<th class="p-md font-label-md text-label-md text-on-surface-variant">SKU</th>
+<th class="p-md font-label-md text-label-md text-on-surface-variant">Variants</th>
+<th class="p-md font-label-md text-label-md text-on-surface-variant">Price</th>
+<th class="p-md font-label-md text-label-md text-on-surface-variant">Status</th>
+<th class="p-md font-label-md text-label-md text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-outline-variant/50 hover:bg-surface/50 transition-colors group">
+<td class="p-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded bg-surface-container overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="Minimalist product photography of a crisp white cotton t-shirt neatly folded on a light grey stone surface, soft studio lighting, professional e-commerce style, subtle shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3KfCdP49uutqh2kUUTlvE1X5huE7q-4YzhZvxEQTGcz7oS3_lgKXA-fIqTd2RB_ACXR62e1Hn_YqVcg920mjk45gx1o1Tt9_o91qIt5GxKxM46WCpC7KheKmhwLRtrEEoA7BO9P3Ys1NUeFu2raAcOiHgXzIz62A9N3fPGuHO-IQWKOhMDodH2yiRBmSzoau5fbdGsYIpVCbXLKdd2rgLBTkNCJZL0uECnJ772yxuR6CZ7cXWKGIBSQ"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">Essential Cotton Tee</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Apparel</p>
+</div>
+</div>
+</td>
+<td class="p-md font-mono-label text-mono-label text-on-surface-variant">APP-TS-001</td>
+<td class="p-md">
+<div class="flex flex-col gap-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Size: S, M, L, XL</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Color: White, Black</span>
+</div>
+</td>
+<td class="p-md font-body-sm text-body-sm text-on-background">$24.00</td>
+<td class="p-md">
+<span class="bg-[#DCFCE7] text-[#166534] px-sm py-xs rounded font-label-sm text-label-sm">In Stock (142)</span>
+</td>
+<td class="p-md text-right">
+<button class="text-on-surface-variant hover:text-primary p-xs"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error p-xs"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface/50 transition-colors group">
+<td class="p-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded bg-surface-container overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="High-end product photography of a sleek minimalist leather wallet, rich brown tone, resting on a clean marble surface, dramatic side lighting highlighting the texture, premium retail aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHvRxRsLLwqlhKZVMrsy_OAseyTQQPUvURs1wF6WWFKIoH6-FElFlIVFuR_uRTVHDrWHkTKPPrAeAr-HtHaU5iZt-hyfqtfkumEEnLcjGNEHSHr7JjiNoDhgi-ECibVffMmHc0z9Xt8Er7OZlTaz9C7ZLuECZiwAjjcFabpnIT9MWUSAj-qSBhz2Neb5gw4H34oqMiY-0Dxe-q8gX-w-E4JmlzrZC6XfVJOaUmNmN_4Xo9EOrXF2Nbug"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">Minimalist Leather Wallet</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Accessories</p>
+</div>
+</div>
+</td>
+<td class="p-md font-mono-label text-mono-label text-on-surface-variant">ACC-LW-042</td>
+<td class="p-md">
+<div class="flex flex-col gap-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Material: Full Grain</span>
+</div>
+</td>
+<td class="p-md font-body-sm text-body-sm text-on-background">$65.00</td>
+<td class="p-md">
+<span class="bg-[#FEF9C3] text-[#854D0E] px-sm py-xs rounded font-label-sm text-label-sm">Low Stock (3)</span>
+</td>
+<td class="p-md text-right">
+<button class="text-on-surface-variant hover:text-primary p-xs"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error p-xs"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md border-t border-outline-variant flex justify-between items-center bg-surface">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 1-10 of 45 products</span>
+<div class="flex gap-sm">
+<button class="px-sm py-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low font-label-sm text-label-sm disabled:opacity-50">Prev</button>
+<button class="px-sm py-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container-low font-label-sm text-label-sm">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface border-t border-outline-variant pb-safe z-50 md:hidden shadow-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant flex-1 py-sm active:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm mt-xs">Sales</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold flex-1 py-sm active:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory" style="font-variation-settings: 'FILL' 1;">inventory</span>
+<span class="font-label-sm text-label-sm mt-xs">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant flex-1 py-sm active:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+<span class="font-label-sm text-label-sm mt-xs">POS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant flex-1 py-sm active:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-sm text-label-sm mt-xs">Records</span>
+</a>
+</nav>
+</body></html>

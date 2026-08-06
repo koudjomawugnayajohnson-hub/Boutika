@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boutika - Manage Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#263143",
+                        "primary-fixed-dim": "#b9c7df",
+                        "primary-container": "#475569",
+                        "tertiary-container": "#475568",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#b9c7df",
+                        "surface-variant": "#d8e3fb",
+                        "surface-tint": "#515f74",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "background": "#f9f9ff",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-fixed": "#e1e2e4",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#44474c",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-primary-container": "#bbcae1",
+                        "secondary": "#5c5f60",
+                        "on-primary-fixed-variant": "#3a485b",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-container": "#bbcae0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#303e50",
+                        "primary": "#303e51",
+                        "outline-variant": "#c4c6cd",
+                        "on-background": "#111c2d",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "secondary-container": "#dee0e2",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cfdaf2",
+                        "on-secondary-fixed-variant": "#444749",
+                        "outline": "#75777d",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#dee8ff",
+                        "surface-container": "#e7eeff",
+                        "on-surface": "#111c2d",
+                        "on-secondary-container": "#606365",
+                        "primary-fixed": "#d5e3fc",
+                        "on-primary-fixed": "#0d1c2e",
+                        "surface-container-highest": "#d8e3fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "40px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "container-max": "1440px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "mono-label": ["IBM Plex Sans"],
+                        "headline-xl": ["IBM Plex Sans"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["IBM Plex Sans"],
+                        "headline-lg-mobile": ["IBM Plex Sans"],
+                        "headline-md": ["IBM Plex Sans"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased h-screen flex flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface w-full top-0 sticky flex justify-between items-center px-margin-mobile h-16 border-b border-outline-variant z-10">
+<button class="text-primary hover:bg-surface-container-low transition-colors active:scale-95 duration-100 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">RetailCore Pro</h1>
+<button class="text-primary hover:bg-surface-container-low transition-colors active:scale-95 duration-100 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto pb-24 px-margin-mobile pt-lg">
+<!-- Header & Action -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-1">Catalog</p>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Manage Catalog</h2>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:bg-tertiary-container transition-colors active:scale-95 duration-100 rounded-full h-10 w-10 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Search & Filter Bar -->
+<div class="flex gap-sm mb-lg">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-outline" placeholder="Search products..." type="text"/>
+</div>
+<button class="h-10 px-3 bg-surface-container-lowest border border-outline-variant rounded-lg text-secondary hover:bg-surface-container-low transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+<!-- Product List (Card Based for Mobile) -->
+<div class="flex flex-col gap-md">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm relative group overflow-hidden">
+<div class="flex gap-md">
+<!-- Product Image -->
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="A clean, high-resolution product shot of a navy blue essential crewneck t-shirt. The t-shirt is laid flat on a pristine white background with soft, even studio lighting. The fabric texture is clearly visible, conveying premium quality. The overall aesthetic is minimalist, modern, and suitable for an enterprise e-commerce catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNua2R6cc5yB-Znje1JzIMHFfu1Utgkc5c_SQTrZVWDilaPLAwAc9NBqPB556NMZorkgZrOHKxsiziZ91653XaZRA1pfXOAjDkE1cFX3z9oyZzpb3kkfhS_369gxSDlTl9ciGnE3IL7itQasueAN2gXfI4fFoOky9gKaTkFyZTS_zJK2u0JzqYL8As1bRiqQQW04bba66RGRs2phMlxSn0-KccZPhxJZjxSqlgaiTvlyueLS93ZcHdfg"/>
+</div>
+<!-- Product Details -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-label-md text-label-md text-primary truncate pr-2">Essential Crewneck</h3>
+<p class="font-label-md text-label-md text-on-surface">$24.00</p>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-2 truncate">SKU: TS-NAV-M-01</p>
+<!-- Variant Chips -->
+<div class="flex gap-2 mb-3">
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded border border-outline-variant/50">
+                                Color: Navy
+                            </span>
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded border border-outline-variant/50">
+                                Size: M
+                            </span>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex justify-between items-center pt-3 mt-1 border-t border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-label-sm text-label-sm text-secondary">84 in stock</span>
+</div>
+<div class="flex gap-2">
+<button class="text-secondary hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm relative group overflow-hidden">
+<div class="flex gap-md">
+<!-- Product Image -->
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="A clean, high-resolution product shot of a pair of charcoal grey tailored trousers. The trousers are folded neatly on a pristine white background with soft, even studio lighting. The fabric texture is clearly visible, conveying premium quality. The overall aesthetic is minimalist, modern, and suitable for an enterprise e-commerce catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6JAjSJqdlumabmysjUbfJ3kmJgjXg4dRDmqKWwWULL2rrmaGYC4Nchg_mUogesgvDhBl0-pgHycD5PjXfmzydpNFQ25TpuwSJAZVsk2jv1vuX5CPJB1LZ3wpcv1CAgBKGht9_ZHIs06zthaNBtyM5bttlvdjNYva8Pc0oQ7-wOOrLhOqiP2ThQGw6WFNvivCG35Rj5oqMwg-ZIELajSUWFewzb9FEl5H6Ojl2Bxs9qzzcyzWw4RNxzA"/>
+</div>
+<!-- Product Details -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-label-md text-label-md text-primary truncate pr-2">Tailored Trousers</h3>
+<p class="font-label-md text-label-md text-on-surface">$89.00</p>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-2 truncate">SKU: TR-CHA-32-04</p>
+<!-- Variant Chips -->
+<div class="flex gap-2 mb-3">
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded border border-outline-variant/50">
+                                Color: Charcoal
+                            </span>
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-low text-primary font-label-sm text-label-sm rounded border border-outline-variant/50">
+                                Size: 32W
+                            </span>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex justify-between items-center pt-3 mt-1 border-t border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span class="font-label-sm text-label-sm text-secondary">12 in stock</span>
+</div>
+<div class="flex gap-2">
+<button class="text-secondary hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm relative group overflow-hidden opacity-75">
+<div class="flex gap-md">
+<!-- Product Image -->
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-surface-container-low relative">
+<div class="absolute inset-0 bg-surface/50 z-10 flex items-center justify-center">
+<span class="bg-surface text-secondary font-label-sm text-[10px] px-1 py-0.5 rounded uppercase tracking-wider">Out</span>
+</div>
+<img class="w-full h-full object-cover grayscale" data-alt="A clean, high-resolution product shot of a minimalist white leather sneaker. The sneaker is positioned dynamically on a pristine white background with soft, even studio lighting. The leather texture is clearly visible, conveying premium quality. The overall aesthetic is minimalist, modern, and suitable for an enterprise e-commerce catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx2x_6clhMe6ojPLVaV502c4KDRVYQMh5OgTTSAMI9Ot8XzORA5eZdcqKCWutTKh6qcOgTE-yOzQGwFnURZYsceat7WKKkyxXSssBP5lgdm0VJUlRR2S6HLz7YmV5VJJohzQKV4NuJCdb6WXV2RTLD0wvX8JDpJdWFj1PvJi2I3k0GAJT9D1bQF3ahw9l85Zsq1VZtRCvQ_Evk3p1As5ecJkhEQXKIqXXqelmXNSvOZkY2DStoAzYPpQ"/>
+</div>
+<!-- Product Details -->
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-label-md text-label-md text-secondary truncate pr-2">Classic Sneaker</h3>
+<p class="font-label-md text-label-md text-secondary">$120.00</p>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mb-2 truncate">SKU: SN-WHI-10-09</p>
+<!-- Variant Chips -->
+<div class="flex gap-2 mb-3">
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-lowest text-secondary font-label-sm text-label-sm rounded border border-outline-variant/30">
+                                Color: White
+                            </span>
+<span class="inline-flex items-center px-2 py-1 bg-surface-container-lowest text-secondary font-label-sm text-label-sm rounded border border-outline-variant/30">
+                                Size: 10
+                            </span>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex justify-between items-center pt-3 mt-1 border-t border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-sm text-label-sm text-error">Out of stock</span>
+</div>
+<div class="flex gap-2">
+<button class="text-secondary hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant shadow-md md:hidden">
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-transform duration-150 active:scale-90 w-16">
+<span class="material-symbols-outlined mb-1">payments</span>
+<span class="font-label-sm text-label-sm">Sales</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-transform duration-150 active:scale-90 w-20">
+<span class="material-symbols-outlined fill mb-1">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-transform duration-150 active:scale-90 w-16">
+<span class="material-symbols-outlined mb-1">point_of_sale</span>
+<span class="font-label-sm text-label-sm">POS</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-transform duration-150 active:scale-90 w-16">
+<span class="material-symbols-outlined mb-1">receipt_long</span>
+<span class="font-label-sm text-label-sm">Records</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Verify your number</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#303e50",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-surface-variant": "#44474c",
+                        "surface-container-low": "#f0f3ff",
+                        "inverse-surface": "#263143",
+                        "tertiary-container": "#475568",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "secondary": "#5c5f60",
+                        "on-secondary-container": "#606365",
+                        "on-tertiary-container": "#bbcae0",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#d5e3fc",
+                        "on-primary-fixed": "#0d1c2e",
+                        "surface-container-highest": "#d8e3fb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-container": "#dee0e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#bbcae1",
+                        "surface-bright": "#f9f9ff",
+                        "primary-container": "#475569",
+                        "surface-container": "#e7eeff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface": "#111c2d",
+                        "secondary-fixed": "#e1e2e4",
+                        "inverse-primary": "#b9c7df",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-primary-fixed-variant": "#3a485b",
+                        "primary": "#303e51",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#515f74",
+                        "on-background": "#111c2d",
+                        "outline-variant": "#c4c6cd",
+                        "surface-variant": "#d8e3fb",
+                        "outline": "#75777d",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "primary-fixed-dim": "#b9c7df",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "xl": "40px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["IBM Plex Sans"],
+                        "headline-lg-mobile": ["IBM Plex Sans"],
+                        "headline-lg": ["IBM Plex Sans"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-label": ["IBM Plex Sans"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .otp-input:focus {
+            outline: none;
+            border-color: #475569;
+            box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.1);
+        }
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        /* Firefox */
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest min-h-screen flex flex-col font-body-md text-on-surface antialiased">
+<!-- TopAppBar (Transactional - Hidden Navigation, just Back and Brand) -->
+<header class="w-full sticky top-0 z-50 bg-surface-container-lowest flex flex-col justify-center px-margin-mobile h-14 w-full border-b border-surface-variant/30">
+<div class="flex items-center">
+<button class="hover:bg-secondary-container/50 rounded-full transition-colors active:scale-95 duration-150 p-2 -ml-2 text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center pt-xl px-margin-mobile">
+<div class="w-full max-w-[400px]">
+<!-- Header Text -->
+<div class="mb-xl text-center md:text-left">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-sm">Verify your number</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Sent to +1 (555) 000-0000</p>
+</div>
+<!-- OTP Input Form -->
+<form class="w-full" id="otp-form">
+<div class="flex justify-between gap-2 md:gap-xs mb-lg">
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-headline-md text-headline-md rounded bg-surface-container-lowest border border-outline-variant text-on-surface transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="number"/>
+</div>
+<!-- Resend Action -->
+<div class="text-center md:text-left mb-xl">
+<button class="font-label-md text-label-md text-primary hover:text-primary-container transition-colors focus:outline-none focus:underline" type="button">
+                        Resend code
+                    </button>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-12 bg-primary-container text-on-primary font-label-md text-label-md rounded flex items-center justify-center hover:opacity-90 active:scale-[0.98] transition-all shadow-sm" type="submit">
+                    Verify &amp; Continue
+                </button>
+</form>
+<!-- Trust Indicator -->
+<div class="mt-xl flex items-center justify-center md:justify-start gap-2 text-on-surface-variant opacity-80">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-sm text-label-sm">Secure Verification</span>
+</div>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.otp-input');
+            const form = document.getElementById('otp-form');
+
+            // Focus first input on load
+            if (inputs.length > 0) {
+                setTimeout(() => inputs[0].focus(), 100);
+            }
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    // Ensure only one digit
+                    if (e.target.value.length > 1) {
+                        e.target.value = e.target.value.slice(0, 1);
+                    }
+                    // Move to next input if filled
+                    if (e.target.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    // Move back on backspace if empty
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+                
+                // Prevent non-numeric pasting
+                input.addEventListener('paste', (e) => {
+                     e.preventDefault();
+                     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, inputs.length);
+                     if(pastedData) {
+                         pastedData.split('').forEach((char, i) => {
+                             if(inputs[index + i]) {
+                                 inputs[index + i].value = char;
+                                 if(index + i < inputs.length - 1) {
+                                     inputs[index + i + 1].focus();
+                                 } else {
+                                     inputs[index + i].blur();
+                                 }
+                             }
+                         });
+                     }
+                });
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Add loading state logic here if needed
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 1000);
+            });
+        });
+    </script>
+</body></html>

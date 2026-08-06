@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sale Detail - Boutika</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "outline-variant": "#c4c6cd",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-container": "#bbcae0",
+                        "surface-tint": "#515f74",
+                        "secondary-fixed": "#e1e2e4",
+                        "background": "#f9f9ff",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "error": "#ba1a1a",
+                        "primary-container": "#475569",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-primary-container": "#bbcae1",
+                        "on-primary-fixed": "#0d1c2e",
+                        "secondary-container": "#dee0e2",
+                        "on-secondary-container": "#606365",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d8e3fb",
+                        "on-primary-fixed-variant": "#3a485b",
+                        "on-background": "#111c2d",
+                        "primary": "#303e51",
+                        "primary-fixed-dim": "#b9c7df",
+                        "on-surface-variant": "#44474c",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777d",
+                        "on-surface": "#111c2d",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#5c5f60",
+                        "primary-fixed": "#d5e3fc",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-surface": "#263143",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#303e50",
+                        "surface-container-highest": "#d8e3fb",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "tertiary-container": "#475568",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b9c7df"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xl": "40px",
+                        "md": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["IBM Plex Sans"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "mono-label": ["IBM Plex Sans"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["IBM Plex Sans"],
+                        "headline-xl": ["IBM Plex Sans"],
+                        "headline-md": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row antialiased">
+<!-- Mobile Top Navigation for Task-Focused View -->
+<header class="md:hidden bg-surface flex items-center justify-between px-margin-mobile py-md w-full sticky top-0 z-50 border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:bg-surface-container p-sm rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary font-bold">Sale Detail</h1>
+</div>
+<button class="text-primary p-sm rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg md:py-xl flex justify-center">
+<div class="w-full max-w-3xl">
+<!-- Header Section (Desktop Back Navigation & Actions) -->
+<div class="hidden md:flex items-center justify-between mb-xl">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container p-sm rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary font-bold">Transaction #TRX-8924A</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Oct 24, 2023 at 2:45 PM</p>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="px-md py-sm rounded border border-[#CBD5E1] text-[#475569] font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">receipt</span>
+                        Share Receipt
+                    </button>
+<button class="px-md py-sm rounded bg-[#475569] text-[#FFFFFF] font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+                        Generate Invoice
+                    </button>
+</div>
+</div>
+<!-- Mobile Transaction Header (Visible only on mobile) -->
+<div class="md:hidden mb-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">#TRX-8924A</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Oct 24, 2023 • 2:45 PM</p>
+</div>
+<!-- Receipt Container -->
+<div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden relative">
+<!-- Decorative Top Edge (Receipt style) -->
+<div class="h-2 w-full bg-[radial-gradient(circle_at_top,_#f9f9ff_3px,_transparent_4px)] bg-[size:16px_16px] absolute top-[-4px] left-0 right-0"></div>
+<div class="p-lg md:p-xl flex flex-col gap-xl pt-xl">
+<!-- Status & Basic Info -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md pb-md border-b border-[#E2E8F0]">
+<div class="flex items-center gap-sm">
+<span class="bg-[#DCFCE7] text-[#166534] font-label-sm text-label-sm px-sm py-[2px] rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                Paid
+                            </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">via Credit Card (••• 4242)</span>
+</div>
+<div class="text-left md:text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cashier</p>
+<p class="font-body-md text-body-md text-on-background">Sarah Jenkins</p>
+</div>
+</div>
+<!-- Customer Info (If attached) -->
+<div class="bg-surface-container-low rounded-lg p-md border border-[#E2E8F0] flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Customer</p>
+<p class="font-body-md text-body-md text-on-background font-medium">Michael Chang</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">michael.c@example.com</p>
+</div>
+</div>
+<!-- Items List -->
+<div class="flex flex-col">
+<h3 class="font-label-md text-label-md text-primary mb-md uppercase tracking-wider">Purchased Items</h3>
+<div class="flex flex-col gap-sm">
+<!-- Item Row 1 -->
+<div class="flex justify-between items-start py-sm border-b border-surface-container">
+<div class="flex gap-md w-full">
+<div class="w-12 h-12 bg-surface-variant rounded flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">apparel</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-background font-medium">Merino Wool Sweater</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Size: M | Color: Navy</p>
+</div>
+</div>
+<div class="text-right whitespace-nowrap pl-md">
+<p class="font-body-md text-body-md text-on-background">1 × $120.00</p>
+</div>
+</div>
+<!-- Item Row 2 -->
+<div class="flex justify-between items-start py-sm border-b border-surface-container">
+<div class="flex gap-md w-full">
+<div class="w-12 h-12 bg-surface-variant rounded flex-shrink-0 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">checkroom</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-background font-medium">Classic Denim Jacket</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Size: L | Color: Vintage Wash</p>
+</div>
+</div>
+<div class="text-right whitespace-nowrap pl-md">
+<p class="font-body-md text-body-md text-on-background">1 × $95.50</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Totals -->
+<div class="flex justify-end pt-md">
+<div class="w-full md:w-1/2 flex flex-col gap-sm">
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span>$215.50</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Tax (8.5%)</span>
+<span>$18.32</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Discount (Promo Code: FALL10)</span>
+<span class="text-[#166534]">-$21.55</span>
+</div>
+<div class="h-[1px] w-full bg-[#E2E8F0] my-xs"></div>
+<div class="flex justify-between items-end">
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider">Total</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">$212.27</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Bottom Edge -->
+<div class="h-2 w-full bg-[radial-gradient(circle_at_bottom,_#f9f9ff_3px,_transparent_4px)] bg-[size:16px_16px] absolute bottom-[-4px] left-0 right-0"></div>
+</div>
+<!-- Mobile Actions (Sticky bottom on mobile) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-[#E2E8F0] p-margin-mobile flex gap-md pb-safe z-50">
+<button class="flex-1 py-sm rounded border border-[#CBD5E1] text-[#475569] font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">receipt</span>
+                    Share
+                </button>
+<button class="flex-1 py-sm rounded bg-[#475569] text-[#FFFFFF] font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+                    Invoice
+                </button>
+</div>
+</div>
+</main>
+</body></html>

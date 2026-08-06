@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boutika - Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#475569",
+                        "background": "#f9f9ff",
+                        "surface": "#f9f9ff",
+                        "on-secondary-container": "#606365",
+                        "tertiary-fixed-dim": "#b9c8de",
+                        "tertiary-fixed": "#d4e4fa",
+                        "surface-variant": "#d8e3fb",
+                        "secondary": "#5c5f60",
+                        "surface-bright": "#f9f9ff",
+                        "outline": "#75777d",
+                        "on-surface": "#111c2d",
+                        "on-tertiary-fixed": "#0d1c2d",
+                        "on-tertiary-fixed-variant": "#39485a",
+                        "on-primary-fixed-variant": "#3a485b",
+                        "primary": "#303e51",
+                        "tertiary": "#303e50",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-fixed": "#d5e3fc",
+                        "inverse-surface": "#263143",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#475568",
+                        "surface-container-high": "#dee8ff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#44474c",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed-variant": "#444749",
+                        "inverse-primary": "#b9c7df",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#cfdaf2",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#0d1c2e",
+                        "on-background": "#111c2d",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "primary-fixed-dim": "#b9c7df",
+                        "surface-tint": "#515f74",
+                        "secondary-fixed": "#e1e2e4",
+                        "secondary-container": "#dee0e2",
+                        "on-primary-container": "#bbcae1",
+                        "secondary-fixed-dim": "#c5c6c8",
+                        "outline-variant": "#c4c6cd",
+                        "on-tertiary-container": "#bbcae0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "xl": "40px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-md": ["IBM Plex Sans"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["IBM Plex Sans"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["IBM Plex Sans"],
+                        "body-lg": ["Inter"],
+                        "mono-label": ["IBM Plex Sans"],
+                        "headline-xl": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<!-- NavigationDrawer (Desktop) -->
+<nav class="hidden md:flex flex-col gap-sm p-md fixed left-0 top-0 h-full w-[240px] bg-surface dark:bg-surface-dim border-r border-outline-variant dark:border-outline flat no shadows z-40">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-md text-headline-md text-primary">Management</h1>
+</div>
+<div class="flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container transition-all duration-200 ease-in-out font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm bg-secondary-container dark:bg-primary-container text-on-secondary-container dark:text-on-primary-container rounded-lg transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="payments" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+                Pricing
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container transition-all duration-200 ease-in-out font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+                Payments
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container transition-all duration-200 ease-in-out font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                Invoices
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container transition-all duration-200 ease-in-out font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden w-full top-0 sticky flex justify-between items-center px-margin-mobile py-md border-b border-outline-variant dark:border-outline bg-surface dark:bg-surface-container-high flat no shadows z-50">
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu">menu</span>
+</div>
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-primary dark:text-primary-fixed font-bold tracking-tight">Boutika</h1>
+<div class="flex items-center cursor-pointer active:opacity-80 transition-opacity">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-[240px] px-margin-mobile md:px-margin-desktop py-xl md:py-[64px] max-w-container-max mx-auto w-full pb-[100px] md:pb-xl">
+<!-- Header Section -->
+<div class="text-center mb-xl">
+<h2 class="font-headline-xl text-headline-xl text-on-background mb-sm">Simple, transparent pricing</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-lg">Choose the perfect plan for your boutique's needs. Upgrade or downgrade at any time.</p>
+<!-- Toggle Switch -->
+<div class="inline-flex items-center justify-center gap-md bg-surface-container-lowest border border-outline-variant rounded-full p-xs">
+<button class="font-label-md text-label-md px-lg py-sm rounded-full bg-primary-container text-on-primary transition-colors duration-200" id="toggle-monthly">Monthly</button>
+<button class="font-label-md text-label-md px-lg py-sm rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200" id="toggle-annual">Annually <span class="text-primary font-bold ml-xs">-20%</span></button>
+</div>
+</div>
+<!-- Pricing Cards Container -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-5xl mx-auto">
+<!-- Starter Tier -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.05)] transition-shadow duration-200">
+<div class="mb-md pb-md border-b border-surface-container">
+<h3 class="font-headline-md text-headline-md text-on-background mb-xs">Starter</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Essential tools for new shops.</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-xl text-headline-xl text-on-background price-display" data-annual="$23" data-monthly="$29">$29</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant billing-period">/mo</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-xl flex-1">
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        1 Shop Location
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        2 Staff Accounts
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Basic Inventory Management
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Standard Support
+                    </li>
+</ul>
+<button class="w-full py-md font-label-md text-label-md text-primary-container bg-transparent border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors">Get Started</button>
+</div>
+<!-- Pro Tier (Recommended) -->
+<div class="bg-surface-container-lowest border-2 border-primary-container rounded-xl p-lg flex flex-col relative shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1)] z-10 transform md:-translate-y-2">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary-container text-on-primary px-md py-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider">
+                    Recommended
+                </div>
+<div class="mb-md pb-md border-b border-surface-container">
+<h3 class="font-headline-md text-headline-md text-on-background mb-xs">Pro</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Advanced features for growing businesses.</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-xl text-headline-xl text-on-background price-display" data-annual="$63" data-monthly="$79">$79</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant billing-period">/mo</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-xl flex-1">
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Up to 3 Shop Locations
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        10 Staff Accounts
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Advanced Analytics &amp; Reporting
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Priority 24/7 Support
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Omnichannel Selling
+                    </li>
+</ul>
+<button class="w-full py-md font-label-md text-label-md text-on-primary bg-primary-container rounded-lg hover:opacity-90 transition-opacity shadow-sm">Start Free Trial</button>
+</div>
+<!-- Enterprise Tier -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.05)] transition-shadow duration-200">
+<div class="mb-md pb-md border-b border-surface-container">
+<h3 class="font-headline-md text-headline-md text-on-background mb-xs">Enterprise</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Custom solutions for large operations.</p>
+<div class="flex items-baseline gap-xs h-[44px] items-center">
+<span class="font-headline-lg text-headline-lg text-on-background">Custom</span>
+</div>
+</div>
+<ul class="flex flex-col gap-sm mb-xl flex-1">
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Unlimited Shop Locations
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Unlimited Staff Accounts
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Custom API Integrations
+                    </li>
+<li class="flex items-start gap-sm font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary mt-xs">check_circle</span>
+                        Dedicated Account Manager
+                    </li>
+</ul>
+<button class="w-full py-md font-label-md text-label-md text-primary-container bg-transparent border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors">Contact Sales</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center bg-surface px-4 py-2 border-t border-outline-variant dark:border-outline shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant scale-95 active:scale-90 transition-transform w-[64px]" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-[10px] leading-tight">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-primary-fixed dark:bg-primary-container rounded-full px-4 py-1 scale-95 active:scale-90 transition-transform w-[64px]" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs" data-icon="payments" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-sm text-[10px] leading-tight font-bold">Pricing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant scale-95 active:scale-90 transition-transform w-[64px]" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-[10px] leading-tight">Payments</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant scale-95 active:scale-90 transition-transform w-[64px]" href="#">
+<span class="material-symbols-outlined text-[24px] mb-xs" data-icon="settings">settings</span>
+<span class="font-label-sm text-[10px] leading-tight">Settings</span>
+</a>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnMonthly = document.getElementById('toggle-monthly');
+            const btnAnnual = document.getElementById('toggle-annual');
+            const priceDisplays = document.querySelectorAll('.price-display');
+            const billingPeriods = document.querySelectorAll('.billing-period');
+
+            btnAnnual.addEventListener('click', () => {
+                // Style Active
+                btnAnnual.classList.add('bg-primary-container', 'text-on-primary');
+                btnAnnual.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-low');
+                
+                // Style Inactive
+                btnMonthly.classList.remove('bg-primary-container', 'text-on-primary');
+                btnMonthly.classList.add('text-on-surface-variant', 'hover:bg-surface-container-low');
+
+                // Update Prices
+                priceDisplays.forEach(display => {
+                    display.textContent = display.getAttribute('data-annual');
+                });
+                billingPeriods.forEach(period => {
+                    period.textContent = '/mo (billed annually)';
+                });
+            });
+
+            btnMonthly.addEventListener('click', () => {
+                // Style Active
+                btnMonthly.classList.add('bg-primary-container', 'text-on-primary');
+                btnMonthly.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-low');
+                
+                // Style Inactive
+                btnAnnual.classList.remove('bg-primary-container', 'text-on-primary');
+                btnAnnual.classList.add('text-on-surface-variant', 'hover:bg-surface-container-low');
+
+                // Update Prices
+                priceDisplays.forEach(display => {
+                    display.textContent = display.getAttribute('data-monthly');
+                });
+                billingPeriods.forEach(period => {
+                    period.textContent = '/mo';
+                });
+            });
+        });
+    </script>
+</body></html>
