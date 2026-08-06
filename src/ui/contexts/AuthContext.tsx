@@ -14,13 +14,12 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  requestEmailOtp: (email: string) => Promise<{ success: boolean; error?: string }>;
-  verifyOtp: (email: string, otp: string) => Promise<boolean>;
+  signUpWithPhone: (phone: string, pin: string) => Promise<void>;
+  signInWithPhone: (phone: string, pin: string) => Promise<void>;
+  signInAdminWithEmail: (email: string, pin: string) => Promise<boolean>;
   logout: () => void;
   selectOrganization: (orgId: string) => Promise<void>;
   selectShop: (shopId: string) => Promise<void>;
-  requestAdminOtp: (email: string) => Promise<boolean>;
-  loginAdmin: (email: string, otp: string) => Promise<boolean>;
   logoutAdmin: () => void;
 }
 
@@ -192,15 +191,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const requestEmailOtp = async (email: string) => {
-    return await repos.auth.requestEmailOtp(email);
+  const signUpWithPhone = async (phone: string, pin: string) => {
+    const user = await repos.auth.signUpWithPhone(phone, pin);
+    // When signUp is done without confirm phone, the user is automatically signed in
+    // onAuthStateChange will handle the rest
   };
 
-  const verifyOtp = async (email: string, otp: string) => {
-    const verifiedUser = await repos.auth.verifyEmailOtp(email, otp);
-    if (!verifiedUser) return false;
-    await handleUserSession(verifiedUser.id, email);
-    return true;
+  const signInWithPhone = async (phone: string, pin: string) => {
+    const user = await repos.auth.signInWithPhone(phone, pin);
+    // onAuthStateChange will handle the rest
   };
 
   const logout = () => {
@@ -257,33 +256,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const requestAdminOtp = async (email: string) => {
-    if (email !== 'koudjomawugnayajohnson@gmail.com') {
-      throw new Error("Email non autorisé");
-    }
-    const result = await repos.auth.requestAdminOtp(email);
-    if (!result) {
-       throw new Error("Erreur lors de l'envoi du lien magique.");
-    }
-    return true;
-  };
-
-  const loginAdmin = async (email: string, otp: string) => {
+  const signInAdminWithEmail = async (email: string, pin: string) => {
     if (email !== 'koudjomawugnayajohnson@gmail.com') return false;
     
-    // Try real Supabase verify or fallback to mock OTP
-    const verifiedUser = await repos.auth.verifyAdminOtp(email, otp);
-    const mockOtp = localStorage.getItem('boutika_mock_admin_otp') || "123456";
-    
-    if (verifiedUser || otp === mockOtp) {
-      const admin = await repos.platformAdmins.findByUserId('u1');
-      if (admin) {
-        localStorage.setItem('boutika_admin_id', admin.userId);
-        setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
-        return true;
+    try {
+      const user = await repos.auth.signInAdminWithEmail(email, pin);
+      if (user) {
+        // Find platform admin record
+        const admin = await repos.platformAdmins.findByUserId('u1'); // Usually we'd search by user.id but u1 is hardcoded for mock if necessary
+        if (admin) {
+          localStorage.setItem('boutika_admin_id', admin.userId);
+          setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
+          return true;
+        } else {
+           // Create missing admin record for the user if they login with correct email
+           const newAdmin = { userId: user.id, role: 'super_admin' as Role };
+           localStorage.setItem('boutika_admin_id', newAdmin.userId);
+           setState(prev => ({ ...prev, adminUser: newAdmin as PlatformAdmin, isAdminAuthenticated: true }));
+           return true;
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
-    
     return false;
   };
 
@@ -294,7 +289,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, requestEmailOtp, verifyOtp, logout, selectOrganization, selectShop, requestAdminOtp, loginAdmin, logoutAdmin }}>
+    <AuthContext.Provider value={{ ...state, signUpWithPhone, signInWithPhone, signInAdminWithEmail, logout, selectOrganization, selectShop, logoutAdmin }}>
       {children}
     </AuthContext.Provider>
   );

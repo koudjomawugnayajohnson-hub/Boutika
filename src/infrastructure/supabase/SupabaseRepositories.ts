@@ -12,65 +12,48 @@ import {
 import { supabase } from './client';
 
 export class SupabaseAuthRepository implements AuthRepository {
-  async registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null> {
+  async signUpWithPhone(phone: string, pin: string): Promise<{ id: string } | null> {
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password: email,
-      options: {
-        data: { name },
-        emailRedirectTo: window.location.origin
-      }
+      phone,
+      password: pin,
     });
     
     if (error || !data.user) {
-      console.error('Supabase registerWithEmail Error:', error?.message);
-      return null;
+      console.error('Supabase signUpWithPhone Error:', error?.message);
+      // Throw error to be caught and displayed in the UI
+      throw new Error(error?.message || "Erreur lors de l'inscription");
     }
     
-    return { id: data.user.id, email: data.user.email! };
-  }
-
-  async requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }> {
-    const { error } = await supabase.auth.signInWithOtp({ 
-      email, 
-      options: { emailRedirectTo: window.location.origin } 
-    });
-    if (error) {
-      console.error('Supabase requestEmailOtp Error:', error.message);
-      return { success: false, error: error.message };
-    }
-    return { success: true };
-  }
-
-  async verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null> {
-    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
-    if (error || !data.user) {
-      console.error('Supabase verifyEmailOtp Error:', error?.message);
-      return null;
-    }
     return { id: data.user.id };
   }
 
-  async requestAdminOtp(email: string): Promise<boolean> {
-    if (email !== 'koudjomawugnayajohnson@gmail.com') return false;
-    const { error } = await supabase.auth.signInWithOtp({ 
-      email,
-      options: { emailRedirectTo: window.location.origin } 
+  async signInWithPhone(phone: string, pin: string): Promise<{ id: string } | null> {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      phone,
+      password: pin,
     });
-    if (error) {
-      console.error('Supabase requestAdminOtp Error:', error.message);
-      return false;
+    
+    if (error || !data.user) {
+      console.error('Supabase signInWithPhone Error:', error?.message);
+      throw new Error(error?.message || 'Numéro de téléphone ou PIN incorrect');
     }
-    return true;
+    
+    return { id: data.user.id };
   }
 
-  async verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null> {
+  async signInAdminWithEmail(email: string, pin: string): Promise<{ id: string } | null> {
     if (email !== 'koudjomawugnayajohnson@gmail.com') return null;
-    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password: pin,
+    });
+    
     if (error || !data.user) {
-      console.error('Supabase verifyAdminOtp Error:', error?.message);
-      return null;
+      console.error('Supabase signInAdminWithEmail Error:', error?.message);
+      throw new Error(error?.message || 'Email ou PIN incorrect');
     }
+    
     return { id: data.user.id };
   }
 
@@ -78,9 +61,9 @@ export class SupabaseAuthRepository implements AuthRepository {
     await supabase.auth.signOut();
   }
 
-  async getCurrentUser(): Promise<{ id: string, email?: string } | null> {
+  async getCurrentUser(): Promise<{ id: string, email?: string, phone?: string } | null> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.user ? { id: session.user.id, email: session.user.email } : null;
+    return session?.user ? { id: session.user.id, email: session.user.email, phone: session.user.phone } : null;
   }
 
   onAuthStateChange(callback: (userId: string | null) => void): () => void {

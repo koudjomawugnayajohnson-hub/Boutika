@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ShieldCheck, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Mail, ArrowLeft, KeyRound } from 'lucide-react';
+import { z } from 'zod';
+
+const adminLoginSchema = z.object({
+  email: z.string().email("Adresse email invalide"),
+  pin: z.string().regex(/^[0-9]{6}$/, "Le code PIN doit contenir exactement 6 chiffres"),
+});
 
 export const PlatformAdminLogin: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [step, setStep] = useState<1 | 2>(1);
+  const [formData, setFormData] = useState({ email: '', pin: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { requestAdminOtp, isAdminAuthenticated } = useAuth();
+  const { signInAdminWithEmail, isAdminAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -17,90 +22,121 @@ export const PlatformAdminLogin: React.FC = () => {
     }
   }, [isAdminAuthenticated, navigate]);
 
-  const handleRequestOtp = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
+    
     try {
-      await requestAdminOtp(email);
-      setStep(2);
+      const validatedData = adminLoginSchema.parse(formData);
+      const success = await signInAdminWithEmail(validatedData.email, validatedData.pin);
+      if (!success) {
+        setError('Identifiants incorrects.');
+      }
     } catch (err: any) {
-      setError(err.message || "Erreur lors de la demande.");
+      if (err && err.errors && Array.isArray(err.errors)) {
+        setError(err.errors[0].message);
+      } else {
+        setError(err.message || 'Erreur de connexion');
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-700">
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4">
-            <ShieldCheck className="w-8 h-8 text-blue-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Portail Administrateur</h1>
-          <p className="text-slate-400 mt-2 text-sm text-center">
-            Accès restreint. Seuls les administrateurs Boutika sont autorisés.
-          </p>
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center text-slate-900">
+          <ShieldCheck size={48} className="text-slate-800" />
         </div>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
+          Administration
+        </h2>
+        <p className="mt-2 text-center text-sm text-slate-600">
+          Espace réservé à l'équipe technique
+        </p>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-red-400">{error}</p>
-          </div>
-        )}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
+          {error && (
+            <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
-        {step === 1 ? (
-          <form onSubmit={handleRequestOtp} className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Email Autorisé</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-500" />
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+                Email administrateur
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
+                  id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="admin@boutika.com"
                   required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="focus:ring-slate-500 focus:border-slate-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-md py-2 px-3 border"
+                  placeholder="admin@boutika.com"
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              disabled={loading || !email}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center"
-            >
-              {loading ? 'Vérification...' : 'Recevoir le lien de connexion'}
-            </button>
-          </form>
-        ) : (
-          <div className="text-center space-y-6">
-            <div className="p-6 bg-slate-900/50 rounded-2xl border border-slate-700">
-              <Mail className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-white mb-2">Vérifiez votre e-mail</h3>
-              <p className="text-slate-400 text-sm">
-                Un lien magique a été envoyé à l'adresse <br/>
-                <span className="font-semibold text-white">{email}</span>
-              </p>
-              <p className="text-slate-400 text-sm mt-4">
-                Cliquez sur le lien pour vous connecter automatiquement au portail d'administration.
-              </p>
-            </div>
             
+            <div>
+              <label htmlFor="pin" className="block text-sm font-medium text-slate-700">
+                Code PIN (6 chiffres)
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <KeyRound className="h-5 w-5 text-slate-400" />
+                </div>
+                <input
+                  id="pin"
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  required
+                  value={formData.pin}
+                  onChange={handleChange}
+                  className="focus:ring-slate-500 focus:border-slate-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-md py-2 px-3 border font-mono tracking-widest"
+                  placeholder="••••••"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 disabled:opacity-50"
+              >
+                {loading ? 'Vérification...' : 'Se connecter'}
+              </button>
+            </div>
+          </form>
+          <div className="mt-6">
             <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="w-full text-slate-400 text-sm hover:text-white transition-colors flex items-center justify-center gap-2"
+              onClick={() => navigate('/')}
+              className="w-full flex justify-center py-2 px-4 border border-slate-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 items-center gap-2"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Changer d'adresse email
+              <ArrowLeft size={16} />
+              Retourner à l'accueil
             </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

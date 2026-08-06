@@ -158,64 +158,39 @@ export class MockSubscriptionRepository implements SubscriptionRepository {
 }
 
 export class MockAuthRepository implements AuthRepository {
-  async registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null> {
-    console.log(`[MOCK AUTH] Registered with email ${email}`);
-    let user = mockDb.users.find(u => u.email === email);
-    if (!user) {
-      user = { id: Math.random().toString(36).substr(2, 9), email, name, createdAt: new Date().toISOString() };
-      mockDb.users.push(user);
-    }
-    return { id: user.id, email: user.email! };
-  }
-
-
-  async verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null> {
-    let user = mockDb.users.find(u => u.email === email);
-    return user ? { id: user.id } : null;
-  }
-
-  async requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }> {
-    console.log('MOCK: OTP/Link sent to', email);
-    return { success: true };
-  }
-  
-  async requestPhoneOtp(phone: string): Promise<boolean> {
-    console.log(`[MOCK AUTH] Phone OTP requested for ${phone}`);
-    return true;
-  }
-  
-  async verifyPhoneOtp(phone: string, otp: string): Promise<{ id: string } | null> {
-    if (otp !== '123456') return null;
+  async signUpWithPhone(phone: string, pin: string): Promise<{ id: string } | null> {
+    console.log(`[MOCK AUTH] Sign up with phone ${phone}`);
     let user = mockDb.users.find(u => u.phone === phone);
     if (!user) {
       user = { id: Math.random().toString(36).substr(2, 9), phone, createdAt: new Date().toISOString() };
       mockDb.users.push(user);
     }
-    return { id: user.id }; 
+    return { id: user.id };
   }
 
-  async requestAdminOtp(email: string): Promise<boolean> {
-    if (email !== 'koudjomawugnayajohnson@gmail.com') return false;
-    console.log(`[MOCK AUTH] Admin OTP requested for ${email}`);
-    return true;
+  async signInWithPhone(phone: string, pin: string): Promise<{ id: string } | null> {
+    console.log(`[MOCK AUTH] Sign in with phone ${phone}`);
+    if (pin !== '123456') throw new Error('Identifiants incorrects');
+    let user = mockDb.users.find(u => u.phone === phone);
+    if (!user) throw new Error('Utilisateur non trouvé');
+    return { id: user.id };
   }
 
-  async verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null> {
-    if (email !== 'koudjomawugnayajohnson@gmail.com' || otp !== '123456') return null;
-    const admin = mockDb.platformAdmins[0]; 
-    return admin ? { id: admin.userId } : null;
+  async signInAdminWithEmail(email: string, pin: string): Promise<{ id: string } | null> {
+    console.log(`[MOCK AUTH] Admin sign in requested for ${email}`);
+    if (email !== 'koudjomawugnayajohnson@gmail.com' || pin !== '123456') return null;
+    return { id: 'admin-id' };
   }
 
   async logout(): Promise<void> {
     console.log(`[MOCK AUTH] Logged out`);
   }
 
-  async getCurrentUser(): Promise<{ id: string, email?: string } | null> {
-    return { id: 'mock-user-id' };
+  async getCurrentUser(): Promise<{ id: string, email?: string, phone?: string } | null> {
+    return { id: 'mock-user-id', phone: '+33612345678' };
   }
 
   onAuthStateChange(callback: (userId: string | null) => void): () => void {
-    // Mock doesn't really have auth state changes, but we return a dummy unsubscribe function
     return () => {};
   }
 }

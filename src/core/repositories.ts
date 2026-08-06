@@ -22,13 +22,11 @@ export interface QueryOptions {
 }
 
 export interface AuthRepository {
-  registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null>;
-  requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }>;
-  verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null>;
-  requestAdminOtp(email: string): Promise<boolean>;
-  verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null>;
+  signUpWithPhone(phone: string, pin: string): Promise<{ id: string } | null>;
+  signInWithPhone(phone: string, pin: string): Promise<{ id: string } | null>;
+  signInAdminWithEmail(email: string, pin: string): Promise<{ id: string } | null>;
   logout(): Promise<void>;
-  getCurrentUser(): Promise<{ id: string, email?: string } | null>;
+  getCurrentUser(): Promise<{ id: string, email?: string, phone?: string } | null>;
   onAuthStateChange(callback: (userId: string | null) => void): () => void;
 }
 
