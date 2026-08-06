@@ -2,52 +2,46 @@ import {
   UserRepository,
   OrganizationRepository,
   ShopRepository,
-  OrganizationMemberRepository,
-  ShopStaffRepository,
-  AuditLogRepository,
-  InvitationRepository,
-  ProductRepository,
-  InventoryRepository,
-  SaleRepository,
-  SaleItemRepository,
-  InvoiceRepository,
-  PlatformAdminRepository,
-  SubscriptionRepository,
-  AuthRepository,
-  QueryOptions
+  AuthRepository
 } from '../../core/repositories';
 import {
   User,
   Organization,
-  Shop,
-  OrganizationMember,
-  ShopStaff,
-  AuditLog,
-  Invitation,
-  Product,
-  InventoryItem,
-  Sale,
-  SaleItem,
-  Invoice,
-  PlatformAdmin,
-  Subscription
+  Shop
 } from '../../core/types';
 import { supabase } from './client';
 
 export class SupabaseAuthRepository implements AuthRepository {
-  async requestPhoneOtp(phone: string): Promise<boolean> {
-    const { error } = await supabase.auth.signInWithOtp({ phone });
+  async registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null> {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password: email,
+      options: {
+        data: { name }
+      }
+    });
+    
+    if (error || !data.user) {
+      console.error('Supabase registerWithEmail Error:', error?.message);
+      return null;
+    }
+    
+    return { id: data.user.id, email: data.user.email! };
+  }
+
+  async requestEmailOtp(email: string): Promise<boolean> {
+    const { error } = await supabase.auth.signInWithOtp({ email });
     if (error) {
-      console.error('Supabase requestPhoneOtp Error:', error.message);
+      console.error('Supabase requestEmailOtp Error:', error.message);
       return false;
     }
     return true;
   }
 
-  async verifyPhoneOtp(phone: string, otp: string): Promise<{ id: string } | null> {
-    const { data, error } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
+  async verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null> {
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
     if (error || !data.user) {
-      console.error('Supabase verifyPhoneOtp Error:', error?.message);
+      console.error('Supabase verifyEmailOtp Error:', error?.message);
       return null;
     }
     return { id: data.user.id };
@@ -90,6 +84,7 @@ export class SupabaseUserRepository implements UserRepository {
     return {
       id: data.id,
       phone: data.phone,
+      email: data.email,
       name: data.name,
       createdAt: data.created_at
     };
@@ -101,15 +96,14 @@ export class SupabaseUserRepository implements UserRepository {
     return {
       id: data.id,
       phone: data.phone,
+      email: data.email,
       name: data.name,
       createdAt: data.created_at
     };
   }
 
   async create(user: Omit<User, 'id' | 'createdAt'> & { id?: string }): Promise<User> {
-    // If id is provided (e.g. from Supabase auth), we use it. Otherwise Supabase auth triggers handle this usually.
-    // However, since we are doing it manually in AuthContext right now:
-    const insertData: any = { phone: user.phone, name: user.name };
+    const insertData: any = { phone: user.phone, name: user.name, email: user.email };
     if (user.id) insertData.id = user.id;
 
     const { data, error } = await supabase.from('users').insert(insertData).select().single();
@@ -117,6 +111,7 @@ export class SupabaseUserRepository implements UserRepository {
     return {
       id: data.id,
       phone: data.phone,
+      email: data.email,
       name: data.name,
       createdAt: data.created_at
     };
@@ -158,6 +153,25 @@ export class SupabaseOrganizationRepository implements OrganizationRepository {
       settings: org.settings
     }).select().single();
     if (error) throw new Error(error.message);
+    return {
+      id: data.id,
+      name: data.name,
+      ownerId: data.owner_id,
+      planTier: data.plan_tier,
+      settings: data.settings,
+      createdAt: data.created_at
+    };
+  }
+
+  async createViaRpc(name: string): Promise<Organization> {
+    const { data, error } = await supabase.rpc('create_organization', { org_name: name });
+    if (error) throw new Error(error.message);
+    
+    // We assume the RPC returns the created organization object or its ID
+    // If it returns just the ID, we might need to fetch it.
+    // For now we assume it returns the object matching the type.
+    if (!data) throw new Error('No data returned from RPC');
+    
     return {
       id: data.id,
       name: data.name,

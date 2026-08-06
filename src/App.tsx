@@ -4,6 +4,7 @@ import { AuthProvider } from './ui/contexts/AuthContext';
 import { Layout } from './ui/components/Layout';
 import { Home } from './ui/pages/Home';
 import { Login } from './ui/pages/Login';
+import { Register } from './ui/pages/Register';
 import { Dashboard } from './ui/pages/Dashboard';
 import { Catalog } from './ui/pages/Catalog';
 import { Inventory } from './ui/pages/Inventory';
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="catalog" element={<Catalog />} />

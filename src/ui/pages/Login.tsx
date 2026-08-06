@@ -4,20 +4,18 @@ import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 
 export const Login: React.FC = () => {
-  const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
-  const [countryCode, setCountryCode] = useState('+228');
-  const [phone, setPhone] = useState('');
+  const [step, setStep] = useState<'EMAIL' | 'OTP'>('EMAIL');
+  const [email, setEmail] = useState('');
   const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
-  const { login, requestPhoneOtp } = useAuth();
+  const { verifyOtp, requestEmailOtp } = useAuth();
   const navigate = useNavigate();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handlePhoneSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.trim().length > 5) {
-      const fullPhone = countryCode + phone;
-      const success = await requestPhoneOtp(fullPhone);
+    if (email.trim().length > 5 && email.includes('@')) {
+      const success = await requestEmailOtp(email);
       if (success) {
         setStep('OTP');
         setError('');
@@ -63,8 +61,7 @@ export const Login: React.FC = () => {
     setError('');
     const fullOtp = otpValues.join('');
     if (fullOtp.length === 6) {
-      const fullPhone = countryCode + phone;
-      const success = await login(fullPhone, fullOtp);
+      const success = await verifyOtp(email, fullOtp);
       if (success) {
         navigate('/app');
       } else {
@@ -79,7 +76,7 @@ export const Login: React.FC = () => {
     }
   }, [step]);
 
-  if (step === 'PHONE') {
+  if (step === 'EMAIL') {
     return (
       <div className="bg-surface text-on-surface h-screen flex flex-col items-center justify-center font-body-md">
         <div className="w-full max-w-[400px] px-sm md:px-0">
@@ -89,38 +86,26 @@ export const Login: React.FC = () => {
           
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex flex-col gap-lg shadow-sm">
             <div className="flex flex-col gap-xs text-center">
-              <h1 className="text-headline-md font-headline-md md:text-headline-lg md:font-headline-lg text-on-surface">{t('auth.phoneTitle')}</h1>
+              <h1 className="text-headline-md font-headline-md md:text-headline-lg md:font-headline-lg text-on-surface">Connexion</h1>
               <p className="text-body-md font-body-md text-on-surface-variant max-w-[280px] mx-auto">
-                {t('auth.phoneSubtitle')}
+                Saisissez votre adresse email pour vous connecter
               </p>
             </div>
             
             {error && <div className="text-error text-center text-label-md font-label-md">{error}</div>}
             
-            <form onSubmit={handlePhoneSubmit} className="flex flex-col gap-sm">
+            <form onSubmit={handleEmailSubmit} className="flex flex-col gap-sm">
               <div className="flex flex-col gap-base">
-                <label className="text-label-md font-label-md text-on-surface-variant uppercase" htmlFor="phone">{t('auth.phoneLabel')}</label>
+                <label className="text-label-md font-label-md text-on-surface-variant uppercase" htmlFor="email">Adresse email</label>
                 <div className="relative flex items-center">
-                  <div className="absolute inset-y-0 left-0 flex items-center border-r border-outline-variant">
-                    <select 
-                      value={countryCode}
-                      onChange={(e) => setCountryCode(e.target.value)}
-                      className="h-full bg-transparent border-0 text-body-md font-body-md text-on-surface pl-sm pr-xs py-0 focus:ring-0 cursor-pointer appearance-none outline-none"
-                    >
-                      <option value="+228">🇹🇬 +228</option>
-                      <option value="+226">🇧🇫 +226</option>
-                      <option value="+223">🇲🇱 +223</option>
-                    </select>
-                    <span className="material-symbols-outlined text-on-surface-variant mr-xs pointer-events-none" style={{fontSize: '16px'}}>arrow_drop_down</span>
-                  </div>
                   <input 
-                    className="w-full h-12 pl-[100px] pr-sm rounded-lg border border-outline-variant bg-surface-container-lowest text-body-lg font-body-lg text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
-                    id="phone" 
-                    type="tel" 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t('auth.phonePlaceholder')}
-                    data-testid="login-phone"
+                    className="w-full h-12 px-sm rounded-lg border border-outline-variant bg-surface-container-lowest text-body-lg font-body-lg text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
+                    id="email" 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="exemple@email.com"
+                    data-testid="login-email"
                     required 
                   />
                 </div>
@@ -134,6 +119,16 @@ export const Login: React.FC = () => {
                 {t('common.continue')}
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
+
+              <div className="mt-4 text-center">
+                <button 
+                  type="button" 
+                  onClick={() => navigate('/register')}
+                  className="text-primary font-label-md text-label-md hover:underline"
+                >
+                  {t('auth.registerTitle')}
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -156,7 +151,7 @@ export const Login: React.FC = () => {
           </div>
           <p className="font-body-lg text-body-lg text-on-surface-variant text-center mb-lg">
             {t('auth.verificationSubtitle')} <br/>
-            <span className="font-semibold text-on-surface">{countryCode} {phone}</span>
+            <span className="font-semibold text-on-surface">{email}</span>
           </p>
           
           {error && <div className="text-error text-center text-label-md font-label-md mb-md">{error}</div>}
@@ -199,7 +194,7 @@ export const Login: React.FC = () => {
         <div className="mt-lg text-center">
           <button 
             type="button" 
-            onClick={() => setStep('PHONE')}
+            onClick={() => setStep('EMAIL')}
             className="text-secondary font-label-md text-label-md hover:text-on-surface transition-colors flex items-center justify-center gap-2 mx-auto"
           >
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>

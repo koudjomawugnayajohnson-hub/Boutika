@@ -22,8 +22,9 @@ export interface QueryOptions {
 }
 
 export interface AuthRepository {
-  requestPhoneOtp(phone: string): Promise<boolean>;
-  verifyPhoneOtp(phone: string, otp: string): Promise<{ id: string } | null>;
+  registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null>;
+  requestEmailOtp(email: string): Promise<boolean>;
+  verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null>;
   requestAdminOtp(email: string): Promise<boolean>;
   verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null>;
   logout(): Promise<void>;
@@ -33,13 +34,14 @@ export interface AuthRepository {
 export interface UserRepository {
   findById(id: string): Promise<User | null>;
   findByPhone(phone: string): Promise<User | null>;
-  create(user: Omit<User, 'id' | 'createdAt'>): Promise<User>;
+  create(user: Omit<User, 'id' | 'createdAt'> & { id?: string }): Promise<User>;
 }
 
 export interface OrganizationRepository {
   findById(id: string): Promise<Organization | null>;
   findAll(): Promise<Organization[]>;
   create(org: Omit<Organization, 'id' | 'createdAt'>): Promise<Organization>;
+  createViaRpc(name: string): Promise<Organization>;
   update(id: string, updates: Partial<Organization>): Promise<Organization>;
   delete(id: string): Promise<void>;
 }

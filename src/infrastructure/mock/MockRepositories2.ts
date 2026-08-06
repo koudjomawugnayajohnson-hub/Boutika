@@ -158,6 +158,16 @@ export class MockSubscriptionRepository implements SubscriptionRepository {
 }
 
 export class MockAuthRepository implements AuthRepository {
+  async registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null> {
+    console.log(`[MOCK AUTH] Registered with email ${email}`);
+    let user = mockDb.users.find(u => u.email === email);
+    if (!user) {
+      user = { id: Math.random().toString(36).substr(2, 9), email, name, createdAt: new Date().toISOString() };
+      mockDb.users.push(user);
+    }
+    return { id: user.id, email: user.email! };
+  }
+
   async requestPhoneOtp(phone: string): Promise<boolean> {
     console.log(`[MOCK AUTH] Phone OTP requested for ${phone}`);
     return true;

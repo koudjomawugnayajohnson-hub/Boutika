@@ -3,7 +3,9 @@ export type PlanTier = 'starter' | 'pro' | 'enterprise';
 
 export interface User {
   id: string;
-  phone: string;
+  phone?: string;
+  email?: string;
+  name?: string;
   createdAt: string; // ISO date string
 }
 

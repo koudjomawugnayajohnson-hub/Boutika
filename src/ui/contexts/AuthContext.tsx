@@ -14,8 +14,8 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  requestPhoneOtp: (phone: string) => Promise<boolean>;
-  login: (phone: string, otp: string) => Promise<boolean>;
+  requestEmailOtp: (email: string) => Promise<boolean>;
+  verifyOtp: (email: string, otp: string) => Promise<boolean>;
   logout: () => void;
   selectOrganization: (orgId: string) => Promise<void>;
   selectShop: (shopId: string) => Promise<void>;
@@ -105,51 +105,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const requestPhoneOtp = async (phone: string) => {
-    return await repos.auth.requestPhoneOtp(phone);
+  const requestEmailOtp = async (email: string) => {
+    return await repos.auth.requestEmailOtp(email);
   };
 
-  const login = async (phone: string, otp: string) => {
-    const verifiedUser = await repos.auth.verifyPhoneOtp(phone, otp);
+  const verifyOtp = async (email: string, otp: string) => {
+    const verifiedUser = await repos.auth.verifyEmailOtp(email, otp);
     if (!verifiedUser) return false;
 
     let user = await repos.users.findById(verifiedUser.id);
-    let isNew = false;
     if (!user) {
-      // In real app, the backend might have created the user, 
-      // but in mock we might need to handle it. 
-      // For now, if we have an ID from verify, we should fetch it or create it locally.
-      user = await repos.users.create({ id: verifiedUser.id, phone } as any);
-      isNew = true;
+      user = await repos.users.create({ id: verifiedUser.id, email, name: email.split('@')[0], phone: '' });
     }
 
     let orgToSelect: Organization | null = null;
     let shopToSelect: Shop | null = null;
     let roleToSet: Role | null = null;
 
-    if (isNew) {
-      // Auto-create for demo purposes
-      orgToSelect = await repos.organizations.create({
-        name: `Org de ${phone}`,
-        ownerId: user.id,
-        planTier: 'starter',
-        settings: {}
-      });
-      shopToSelect = await repos.shops.create({
-        organizationId: orgToSelect.id,
-        name: `Boutique de ${phone}`
-      });
-      roleToSet = 'owner';
-    } else {
-      // Try to find an existing org
-      // For mock simplicity, we just use the first org where ownerId === user.id
-      // (Since we can't query all orgs easily without a method, we assume org1 for demo if it matches)
-      const mockOrg1 = await repos.organizations.findById('org1');
-      if (mockOrg1 && mockOrg1.ownerId === user.id) {
-        orgToSelect = mockOrg1;
+    const pendingOrgName = localStorage.getItem('boutika_pending_org_name');
+
+    if (pendingOrgName) {
+      try {
+        // Create org via RPC
+        orgToSelect = await repos.organizations.createViaRpc(pendingOrgName);
+        localStorage.removeItem('boutika_pending_org_name');
         roleToSet = 'owner';
-        const shops = await repos.shops.findAllByOrganization('org1');
+        const shops = await repos.shops.findAllByOrganization(orgToSelect.id);
         if (shops.length > 0) shopToSelect = shops[0];
+      } catch (err) {
+        console.error("Failed to create org via RPC", err);
+      }
+    } else {
+      // Login flow: Fetch organizations for user
+      if (email === 'zetsufried@gmail.com') {
+        const mockOrg1 = await repos.organizations.findById('org1');
+        if (mockOrg1) {
+          orgToSelect = mockOrg1;
+          roleToSet = 'owner';
+          const shops = await repos.shops.findAllByOrganization('org1');
+          if (shops.length > 0) shopToSelect = shops[0];
+        }
+      } else {
+        const members = await repos.organizationMembers.findByUserId(user.id);
+        if (members.length > 0) {
+          const firstOrg = await repos.organizations.findById(members[0].organizationId);
+          if (firstOrg) {
+            orgToSelect = firstOrg;
+            roleToSet = members[0].role;
+            const shops = await repos.shops.findAllByOrganization(firstOrg.id);
+            if (shops.length > 0) shopToSelect = shops[0];
+          }
+        }
       }
     }
 
@@ -179,6 +185,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: null,
       isAuthenticated: false,
       isLoading: false,
+      adminUser: null,
+      isAdminAuthenticated: false,
     });
   };
 
@@ -237,16 +245,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAdmin = async (email: string, otp: string) => {
     if (email !== 'koudjomawugnayajohnson@gmail.com') return false;
     
-    const expectedOtp = localStorage.getItem('boutika_mock_admin_otp') || "123456";
-    if (otp !== expectedOtp) return false;
-
-    // Hardcode matching to the existing 'u1' which is an admin in MockDatabase
-    const admin = await repos.platformAdmins.findByUserId('u1');
-    if (admin) {
-      localStorage.setItem('boutika_admin_id', admin.userId);
-      setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
-      return true;
+    // Try real Supabase verify or fallback to mock OTP
+    const verifiedUser = await repos.auth.verifyAdminOtp(email, otp);
+    const mockOtp = localStorage.getItem('boutika_mock_admin_otp') || "123456";
+    
+    if (verifiedUser || otp === mockOtp) {
+      const admin = await repos.platformAdmins.findByUserId('u1');
+      if (admin) {
+        localStorage.setItem('boutika_admin_id', admin.userId);
+        setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
+        return true;
+      }
     }
+    
     return false;
   };
 
@@ -257,7 +268,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, requestPhoneOtp, login, logout, selectOrganization, selectShop, requestAdminOtp, loginAdmin, logoutAdmin }}>
+    <AuthContext.Provider value={{ ...state, requestEmailOtp, verifyOtp, logout, selectOrganization, selectShop, requestAdminOtp, loginAdmin, logoutAdmin }}>
       {children}
     </AuthContext.Provider>
   );

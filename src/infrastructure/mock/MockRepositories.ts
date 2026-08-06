@@ -49,6 +49,18 @@ export class MockOrganizationRepository implements OrganizationRepository {
     mockDb.organizations.push(newOrg);
     return newOrg;
   }
+  async createViaRpc(name: string): Promise<Organization> {
+    const newOrg: Organization = {
+      id: generateId(),
+      name,
+      ownerId: 'mock-user-id', // Mock default
+      planTier: 'starter',
+      settings: {},
+      createdAt: generateDate()
+    };
+    mockDb.organizations.push(newOrg);
+    return newOrg;
+  }
   async update(id: string, updates: Partial<Organization>): Promise<Organization> {
     const idx = mockDb.organizations.findIndex(o => o.id === id);
     if (idx === -1) throw new Error('Organization not found');
