@@ -17,7 +17,8 @@ export class SupabaseAuthRepository implements AuthRepository {
       email,
       password: email,
       options: {
-        data: { name }
+        data: { name },
+        emailRedirectTo: window.location.origin
       }
     });
     
@@ -30,7 +31,10 @@ export class SupabaseAuthRepository implements AuthRepository {
   }
 
   async requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }> {
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({ 
+      email, 
+      options: { emailRedirectTo: window.location.origin } 
+    });
     if (error) {
       console.error('Supabase requestEmailOtp Error:', error.message);
       return { success: false, error: error.message };
@@ -49,7 +53,10 @@ export class SupabaseAuthRepository implements AuthRepository {
 
   async requestAdminOtp(email: string): Promise<boolean> {
     if (email !== 'koudjomawugnayajohnson@gmail.com') return false;
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({ 
+      email,
+      options: { emailRedirectTo: window.location.origin } 
+    });
     if (error) {
       console.error('Supabase requestAdminOtp Error:', error.message);
       return false;
