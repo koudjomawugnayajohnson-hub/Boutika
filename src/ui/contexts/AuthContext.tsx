@@ -137,12 +137,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const savedShopId = localStorage.getItem('boutika_shop_id');
 
           if (savedOrgId) {
-            const org = await repos.organizations.findById(savedOrgId);
+            const org = await repos.organizations.findById(savedOrgId).catch(() => null);
             if (org) {
               orgToSelect = org;
               roleToSet = org.ownerId === user.id ? 'owner' : 'member'; // Simplified role check
               if (savedShopId) {
-                const shop = await repos.shops.findById(org.id, savedShopId);
+                const shop = await repos.shops.findById(org.id, savedShopId).catch(() => null);
                 if (shop) shopToSelect = shop;
               }
             }
@@ -150,11 +150,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           // Basic mock logic fallback
           if (!orgToSelect) {
-            const mockOrg1 = await repos.organizations.findById('org1');
+            const mockOrg1 = await repos.organizations.findById('org1').catch(() => null);
             if (mockOrg1 && mockOrg1.ownerId === user.id) {
               orgToSelect = mockOrg1;
               roleToSet = 'owner';
-              const shops = await repos.shops.findAllByOrganization('org1');
+              const shops = await repos.shops.findAllByOrganization('org1').catch(() => []);
               if (shops.length > 0) shopToSelect = shops[0];
             }
           }
@@ -171,6 +171,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           setState(prev => ({ ...prev, isLoading: false }));
         }
+      }).catch(err => {
+        console.error('Error fetching user:', err);
+        setState(prev => ({ ...prev, isLoading: false }));
       });
     } else {
       setState(prev => ({ ...prev, isLoading: false }));
@@ -183,6 +186,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (admin) {
           setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
         }
+      }).catch(err => {
+        console.error('Error fetching admin:', err);
       });
     }
 
