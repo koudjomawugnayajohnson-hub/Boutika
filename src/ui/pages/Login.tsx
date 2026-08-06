@@ -1,23 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 
 export const Login: React.FC = () => {
-  const [step, setStep] = useState<'EMAIL' | 'OTP'>('EMAIL');
+  const [step, setStep] = useState<'EMAIL' | 'LINK_SENT'>('EMAIL');
   const [email, setEmail] = useState('');
-  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
-  const { verifyOtp, requestEmailOtp } = useAuth();
+  const { requestEmailOtp } = useAuth();
   const navigate = useNavigate();
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim().length > 5 && email.includes('@')) {
       const success = await requestEmailOtp(email);
       if (success) {
-        setStep('OTP');
+        setStep('LINK_SENT');
         setError('');
       } else {
         setError(t('auth.loginError'));
@@ -26,55 +24,6 @@ export const Login: React.FC = () => {
       setError(t('auth.loginError'));
     }
   };
-
-  const handleOtpChange = (index: number, value: string) => {
-    const newOtp = [...otpValues];
-    newOtp[index] = value.replace(/[^0-9]/g, '');
-    setOtpValues(newOtp);
-
-    if (value && index < 5) {
-      otpRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !otpValues[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
-    if (pastedData) {
-      const newOtp = [...otpValues];
-      for (let i = 0; i < pastedData.length; i++) {
-        newOtp[i] = pastedData[i];
-      }
-      setOtpValues(newOtp);
-      otpRefs.current[Math.min(pastedData.length, 5)]?.focus();
-    }
-  };
-
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    const fullOtp = otpValues.join('');
-    if (fullOtp.length === 6) {
-      const success = await verifyOtp(email, fullOtp);
-      if (success) {
-        navigate('/app');
-      } else {
-        setError(t('auth.loginError'));
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (step === 'OTP' && otpRefs.current[0]) {
-      otpRefs.current[0].focus();
-    }
-  }, [step]);
 
   if (step === 'EMAIL') {
     return (
@@ -136,59 +85,36 @@ export const Login: React.FC = () => {
     );
   }
 
-  // OTP Step
+  // LINK_SENT Step
   return (
     <div className="bg-surface text-on-surface font-body-md min-h-screen flex items-center justify-center">
       <main className="w-full max-w-md p-md md:p-lg">
         <div className="mb-xl text-center">
           <h1 className="font-headline-lg text-headline-lg text-primary mb-sm">Boutika</h1>
-          <p className="font-title-lg text-title-lg text-on-surface">{t('auth.verificationTitle')}</p>
+          <p className="font-title-lg text-title-lg text-on-surface">Vérifiez votre e-mail</p>
         </div>
         
-        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg flex flex-col items-center">
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center mb-md text-on-primary-container">
-            <span className="material-symbols-outlined" style={{fontSize: '32px'}}>lock_open</span>
+            <span className="material-symbols-outlined" style={{fontSize: '32px'}}>mark_email_read</span>
           </div>
-          <p className="font-body-lg text-body-lg text-on-surface-variant text-center mb-lg">
-            {t('auth.verificationSubtitle')} <br/>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg">
+            Nous avons envoyé un lien magique de connexion à <br/>
             <span className="font-semibold text-on-surface">{email}</span>
           </p>
-          
-          {error && <div className="text-error text-center text-label-md font-label-md mb-md">{error}</div>}
-          
-          <form onSubmit={handleOtpSubmit} className="w-full flex flex-col items-center">
-            <div className="flex gap-2 justify-center w-full mb-lg" dir="ltr">
-              {otpValues.map((val, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (otpRefs.current[index] = el)}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  autoComplete={index === 0 ? "one-time-code" : "off"}
-                  value={val}
-                  onChange={(e) => handleOtpChange(index, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  onPaste={index === 0 ? handleOtpPaste : undefined}
-                  data-testid={`otp-input-${index}`}
-                  className="w-10 h-12 sm:w-12 sm:h-14 text-center text-headline-md font-headline-md border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-              ))}
-            </div>
-            
-            <button type="submit" data-testid="otp-submit" className="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg hover:bg-surface-tint transition-colors mb-md flex items-center justify-center gap-2">
-              {t('auth.validateCode')}
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-md">
+            Cliquez sur ce lien pour vous connecter automatiquement.
+          </p>
+          <div className="text-center font-body-md text-body-md text-on-surface-variant mt-sm">
+            <p className="mb-xs">Vous n'avez rien reçu ?</p>
+            <button 
+              type="button" 
+              onClick={() => handleEmailSubmit({ preventDefault: () => {} } as React.FormEvent)} 
+              className="text-primary font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer mx-auto"
+            >
+              Renvoyer le lien
             </button>
-            
-            <div className="text-center font-body-md text-body-md text-on-surface-variant">
-              <p className="mb-xs">{t('auth.didNotReceive')}</p>
-              <button type="button" className="text-primary font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer flex items-center justify-center gap-1 mx-auto">
-                <span className="material-symbols-outlined text-[16px]">refresh</span>
-                {t('auth.resendCode')}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
         
         <div className="mt-lg text-center">

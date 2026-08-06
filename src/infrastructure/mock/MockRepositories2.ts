@@ -208,7 +208,12 @@ export class MockAuthRepository implements AuthRepository {
     console.log(`[MOCK AUTH] Logged out`);
   }
 
-  async getCurrentUser(): Promise<{ id: string } | null> {
-    return null;
+  async getCurrentUser(): Promise<{ id: string, email?: string } | null> {
+    return { id: 'mock-user-id' };
+  }
+
+  onAuthStateChange(callback: (userId: string | null) => void): () => void {
+    // Mock doesn't really have auth state changes, but we return a dummy unsubscribe function
+    return () => {};
   }
 }

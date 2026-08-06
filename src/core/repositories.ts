@@ -28,7 +28,8 @@ export interface AuthRepository {
   requestAdminOtp(email: string): Promise<boolean>;
   verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null>;
   logout(): Promise<void>;
-  getCurrentUser(): Promise<{ id: string } | null>;
+  getCurrentUser(): Promise<{ id: string, email?: string } | null>;
+  onAuthStateChange(callback: (userId: string | null) => void): () => void;
 }
 
 export interface UserRepository {

@@ -1,18 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 
 export const Register: React.FC = () => {
-  const [step, setStep] = useState<'FORM' | 'OTP'>('FORM');
+  const [step, setStep] = useState<'FORM' | 'LINK_SENT'>('FORM');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { requestEmailOtp, verifyOtp } = useAuth();
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { requestEmailOtp } = useAuth();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +23,7 @@ export const Register: React.FC = () => {
       localStorage.setItem('boutika_pending_org_name', name);
       const success = await requestEmailOtp(email);
       if (success) {
-        setStep('OTP');
+        setStep('LINK_SENT');
       } else {
         setError(t('auth.registerError'));
       }
@@ -35,55 +33,6 @@ export const Register: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  const handleOtpChange = (index: number, value: string) => {
-    const newOtp = [...otpValues];
-    newOtp[index] = value.replace(/[^0-9]/g, '');
-    setOtpValues(newOtp);
-
-    if (value && index < 5) {
-      otpRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !otpValues[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
-    if (pastedData) {
-      const newOtp = [...otpValues];
-      for (let i = 0; i < pastedData.length; i++) {
-        newOtp[i] = pastedData[i];
-      }
-      setOtpValues(newOtp);
-      otpRefs.current[Math.min(pastedData.length, 5)]?.focus();
-    }
-  };
-
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    const fullOtp = otpValues.join('');
-    if (fullOtp.length === 6) {
-      const success = await verifyOtp(email, fullOtp);
-      if (success) {
-        navigate('/app');
-      } else {
-        setError(t('auth.loginError'));
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (step === 'OTP' && otpRefs.current[0]) {
-      otpRefs.current[0].focus();
-    }
-  }, [step]);
 
   if (step === 'FORM') {
     return (
@@ -99,59 +48,61 @@ export const Register: React.FC = () => {
 
           <form onSubmit={handleRegister} className="space-y-6">
             {error && (
-              <div className="p-4 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm">
+              <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom de l'organisation
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('common.organizationName')}
               </label>
               <input
+                id="name"
                 type="text"
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
-                placeholder="Mon Organisation"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                placeholder={t('common.organizationName')}
+                required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('auth.emailLabel')}
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('auth.email')}
               </label>
               <input
+                id="email"
                 type="email"
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow"
-                placeholder={t('auth.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                placeholder="exemple@email.com"
+                required
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading || !name || !email}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
                 <span className="material-symbols-rounded animate-spin">progress_activity</span>
               ) : (
-                "Recevoir le code"
+                t('auth.registerAction')
               )}
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-            <button 
-              type="button"
+          <div className="mt-6 text-center text-sm text-gray-500">
+            {t('auth.alreadyHaveAccount')}{' '}
+            <button
               onClick={() => navigate('/login')}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              className="text-blue-600 hover:bg-blue-50 font-medium px-2 py-1 rounded"
             >
-              {t('auth.backToLogin')}
+              {t('auth.loginTitle')}
             </button>
           </div>
         </div>
@@ -159,66 +110,43 @@ export const Register: React.FC = () => {
     );
   }
 
-  // OTP Step
+  // LINK_SENT Step
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 font-body-md">
+    <div className="bg-surface text-on-surface font-body-md min-h-screen flex items-center justify-center">
       <main className="w-full max-w-md p-md md:p-lg">
         <div className="mb-xl text-center">
           <h1 className="font-headline-lg text-headline-lg text-primary mb-sm">Boutika</h1>
-          <p className="font-title-lg text-title-lg text-on-surface">{t('auth.verificationTitle')}</p>
+          <p className="font-title-lg text-title-lg text-on-surface">Vérifiez votre e-mail</p>
         </div>
         
-        <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 text-blue-600">
-            <span className="material-symbols-outlined" style={{fontSize: '32px'}}>lock_open</span>
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg flex flex-col items-center text-center">
+          <div className="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center mb-md text-on-primary-container">
+            <span className="material-symbols-outlined" style={{fontSize: '32px'}}>mark_email_read</span>
           </div>
-          <p className="text-gray-500 text-center mb-8">
-            {t('auth.verificationSubtitle')} <br/>
-            <span className="font-semibold text-gray-900">{email}</span>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg">
+            Nous avons envoyé un lien magique pour finaliser l'inscription à <br/>
+            <span className="font-semibold text-on-surface">{email}</span>
           </p>
-          
-          {error && <div className="p-4 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm w-full text-center mb-4">{error}</div>}
-          
-          <form onSubmit={handleOtpSubmit} className="w-full flex flex-col items-center">
-            <div className="flex gap-2 justify-center w-full mb-8" dir="ltr">
-              {otpValues.map((val, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (otpRefs.current[index] = el)}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  autoComplete={index === 0 ? "one-time-code" : "off"}
-                  value={val}
-                  onChange={(e) => handleOtpChange(index, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  onPaste={index === 0 ? handleOtpPaste : undefined}
-                  data-testid={`otp-input-${index}`}
-                  className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-              ))}
-            </div>
-            
-            <button type="submit" data-testid="otp-submit" className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition-colors mb-6 flex items-center justify-center gap-2">
-              {t('auth.validateCode')}
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-md">
+            Cliquez sur ce lien pour créer votre boutique et vous connecter automatiquement.
+          </p>
+          <div className="text-center font-body-md text-body-md text-on-surface-variant mt-sm">
+            <p className="mb-xs">Vous n'avez rien reçu ?</p>
+            <button 
+              type="button" 
+              onClick={() => handleRegister({ preventDefault: () => {} } as React.FormEvent)} 
+              className="text-primary font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer mx-auto"
+            >
+              Renvoyer le lien
             </button>
-            
-            <div className="text-center text-sm text-gray-500">
-              <p className="mb-2">{t('auth.didNotReceive')}</p>
-              <button type="button" className="text-blue-600 font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer flex items-center justify-center gap-1 mx-auto">
-                <span className="material-symbols-outlined text-[16px]">refresh</span>
-                {t('auth.resendCode')}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
         
-        <div className="mt-8 text-center">
+        <div className="mt-lg text-center">
           <button 
             type="button" 
             onClick={() => setStep('FORM')}
-            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors flex items-center justify-center gap-2 mx-auto"
+            className="text-secondary font-label-md text-label-md hover:text-on-surface transition-colors flex items-center justify-center gap-2 mx-auto"
           >
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             {t('auth.backToLogin')}
