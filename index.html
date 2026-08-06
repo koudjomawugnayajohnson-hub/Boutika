@@ -18,10 +18,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       window.onerror = function(message, source, lineno, colno, error) {
-        document.body.innerHTML += '<div style="color:red; background:black; padding:20px; z-index:9999; position:absolute; top:0; left:0; width:100%;"><b>Error:</b> ' + message + '<br/>' + source + ':' + lineno + ':' + colno + '<br/><pre>' + (error && error.stack) + '</pre></div>';
+        console.error('Global Error:', message, source, lineno, colno, error);
       };
       window.onunhandledrejection = function(event) {
-        document.body.innerHTML += '<div style="color:red; background:black; padding:20px; z-index:9999; position:absolute; top:0; left:0; width:100%;"><b>Unhandled Rejection:</b> ' + event.reason + '</div>';
+        console.error('Unhandled Rejection:', event.reason);
       };
     </script>
     <script>

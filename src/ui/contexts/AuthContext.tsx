@@ -105,20 +105,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = repos.auth.onAuthStateChange(async (userId) => {
       if (userId) {
-        const authUser = await repos.auth.getCurrentUser();
-        if (authUser) {
-          // Check if admin (by email or specific phone number)
-          if (authUser.email === 'koudjomawugnayajohnson@gmail.com' || authUser.phone === '+22383362944' || authUser.phone === '22383362944') {
-             // Create admin record if it doesn't exist yet
-             let admin = await repos.platformAdmins.findByUserId(userId).catch(() => null);
-             if (!admin) {
-               // For now, let's just set the state if it's the right email/phone
-               admin = { userId, role: 'super_admin' };
-             }
-             localStorage.setItem('boutika_admin_id', admin.userId);
-             setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
+        try {
+          const authUser = await repos.auth.getCurrentUser();
+          if (authUser) {
+            // Check if admin (by email or specific phone number)
+            if (authUser.email === 'koudjomawugnayajohnson@gmail.com' || authUser.phone === '+22383362944' || authUser.phone === '22383362944') {
+               // Create admin record if it doesn't exist yet
+               let admin = await repos.platformAdmins.findByUserId(userId).catch(() => null);
+               if (!admin) {
+                 // For now, let's just set the state if it's the right email/phone
+                 admin = { userId, role: 'super_admin' };
+               }
+               localStorage.setItem('boutika_admin_id', admin.userId);
+               setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
+            }
+            await handleUserSession(authUser.id, authUser.email || '');
           }
-          await handleUserSession(authUser.id, authUser.email || '');
+        } catch (error) {
+          console.error("Failed to authenticate user during state change:", error);
+          // If JWT expired, clear session
+          logout();
         }
       }
     });
