@@ -21,11 +21,11 @@ export const Register: React.FC = () => {
 
     try {
       localStorage.setItem('boutika_pending_org_name', name);
-      const success = await requestEmailOtp(email);
-      if (success) {
+      const result = await requestEmailOtp(email);
+      if (result.success) {
         setStep('LINK_SENT');
       } else {
-        setError(t('auth.registerError'));
+        setError(result.error || t('auth.registerError'));
       }
     } catch (err: any) {
       setError(err.message || t('auth.registerError'));

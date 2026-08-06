@@ -23,7 +23,7 @@ export interface QueryOptions {
 
 export interface AuthRepository {
   registerWithEmail(name: string, email: string): Promise<{ id: string, email: string } | null>;
-  requestEmailOtp(email: string): Promise<boolean>;
+  requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }>;
   verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null>;
   requestAdminOtp(email: string): Promise<boolean>;
   verifyAdminOtp(email: string, otp: string): Promise<{ id: string } | null>;

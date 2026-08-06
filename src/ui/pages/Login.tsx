@@ -13,12 +13,12 @@ export const Login: React.FC = () => {
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim().length > 5 && email.includes('@')) {
-      const success = await requestEmailOtp(email);
-      if (success) {
+      const result = await requestEmailOtp(email);
+      if (result.success) {
         setStep('LINK_SENT');
         setError('');
       } else {
-        setError(t('auth.loginError'));
+        setError(result.error || t('auth.loginError'));
       }
     } else {
       setError(t('auth.loginError'));

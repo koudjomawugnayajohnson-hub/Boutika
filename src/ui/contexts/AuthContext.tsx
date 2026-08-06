@@ -14,7 +14,7 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  requestEmailOtp: (email: string) => Promise<boolean>;
+  requestEmailOtp: (email: string) => Promise<{ success: boolean; error?: string }>;
   verifyOtp: (email: string, otp: string) => Promise<boolean>;
   logout: () => void;
   selectOrganization: (orgId: string) => Promise<void>;

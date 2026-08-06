@@ -29,13 +29,13 @@ export class SupabaseAuthRepository implements AuthRepository {
     return { id: data.user.id, email: data.user.email! };
   }
 
-  async requestEmailOtp(email: string): Promise<boolean> {
+  async requestEmailOtp(email: string): Promise<{ success: boolean; error?: string }> {
     const { error } = await supabase.auth.signInWithOtp({ email });
     if (error) {
       console.error('Supabase requestEmailOtp Error:', error.message);
-      return false;
+      return { success: false, error: error.message };
     }
-    return true;
+    return { success: true };
   }
 
   async verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null> {
