@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { ShieldCheck, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
@@ -9,7 +9,13 @@ export const PlatformAdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { requestAdminOtp } = useAuth();
+  const { requestAdminOtp, isAdminAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAdminAuthenticated) {
+      navigate('/platform-admin');
+    }
+  }, [isAdminAuthenticated, navigate]);
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -7,168 +7,168 @@ create table if not exists public.users (
   phone text,
   email text,
   name text,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- ORGANIZATIONS
 create table if not exists public.organizations (
   id uuid default uuid_generate_v4() primary key,
   name text not null,
-  "planTier" text not null default 'starter',
-  "ownerId" uuid references public.users(id) not null,
+  plan_tier text not null default 'starter',
+  owner_id uuid references public.users(id) not null,
   settings jsonb default '{}'::jsonb,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- SHOPS
 create table if not exists public.shops (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
+  organization_id uuid references public.organizations(id) not null,
   name text not null,
   address text,
   phone text,
-  "logoUrl" text,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  logo_url text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- ORGANIZATION_MEMBERS
 create table if not exists public.organization_members (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
-  "userId" uuid references public.users(id) not null,
+  organization_id uuid references public.organizations(id) not null,
+  user_id uuid references public.users(id) not null,
   role text not null default 'member',
-  "invitedAt" timestamp with time zone default timezone('utc'::text, now()) not null,
-  "joinedAt" timestamp with time zone,
+  invited_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  joined_at timestamp with time zone,
   status text default 'pending'
 );
 
 -- SHOP_STAFF
 create table if not exists public.shop_staff (
   id uuid default uuid_generate_v4() primary key,
-  "shopId" uuid references public.shops(id) not null,
-  "userId" uuid references public.users(id) not null
+  shop_id uuid references public.shops(id) not null,
+  user_id uuid references public.users(id) not null
 );
 
 -- AUDIT_LOGS
 create table if not exists public.audit_logs (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
-  "userId" uuid references public.users(id),
+  organization_id uuid references public.organizations(id) not null,
+  user_id uuid references public.users(id),
   action text not null,
-  "entityType" text,
-  "entityId" text,
+  entity_type text,
+  entity_id text,
   metadata jsonb,
   details jsonb,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- INVITATIONS
 create table if not exists public.invitations (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
-  "phoneOrEmail" text,
+  organization_id uuid references public.organizations(id) not null,
+  phone_or_email text,
   name text,
   phone text,
   role text not null,
-  "shopIds" text[],
-  "invitedBy" uuid references public.users(id),
-  "inviterId" uuid references public.users(id),
+  shop_ids text[],
+  invited_by uuid references public.users(id),
+  inviter_id uuid references public.users(id),
   status text not null default 'pending',
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- PRODUCTS
 create table if not exists public.products (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
+  organization_id uuid references public.organizations(id) not null,
   name text not null,
   description text,
   barcode text,
   category text,
   price numeric not null,
   cost numeric,
-  "lowStockThreshold" integer,
-  "imageUrl" text,
-  "customFields" jsonb,
+  low_stock_threshold integer,
+  image_url text,
+  custom_fields jsonb,
   status text not null default 'active',
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- INVENTORY_ITEMS
 create table if not exists public.inventory_items (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id),
-  "shopId" uuid references public.shops(id) not null,
-  "productId" uuid references public.products(id) not null,
+  organization_id uuid references public.organizations(id),
+  shop_id uuid references public.shops(id) not null,
+  product_id uuid references public.products(id) not null,
   quantity integer not null default 0,
-  "lowStockThreshold" integer,
-  "updatedAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  low_stock_threshold integer,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- SALES
 create table if not exists public.sales (
   id uuid default uuid_generate_v4() primary key,
-  "shopId" uuid references public.shops(id) not null,
-  "organizationId" uuid references public.organizations(id) not null,
+  shop_id uuid references public.shops(id) not null,
+  organization_id uuid references public.organizations(id) not null,
   status text not null default 'in_progress',
   total numeric default 0,
-  "totalAmount" numeric default 0,
-  "paymentMethod" text,
-  "createdBy" uuid references public.users(id),
-  "cashierId" uuid references public.users(id),
-  "customerName" text,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  total_amount numeric default 0,
+  payment_method text,
+  created_by uuid references public.users(id),
+  cashier_id uuid references public.users(id),
+  customer_name text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- SALE_ITEMS
 create table if not exists public.sale_items (
   id uuid default uuid_generate_v4() primary key,
-  "saleId" uuid references public.sales(id) not null,
-  "productId" uuid references public.products(id) not null,
+  sale_id uuid references public.sales(id) not null,
+  product_id uuid references public.products(id) not null,
   quantity integer not null,
-  "unitPrice" numeric not null,
+  unit_price numeric not null,
   subtotal numeric
 );
 
 -- INVOICES
 create table if not exists public.invoices (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
-  "shopId" uuid references public.shops(id) not null,
-  "saleId" uuid references public.sales(id) not null,
-  "invoiceNumber" text,
-  "customerName" text,
-  "customerPhone" text,
-  "pdfUrl" text,
+  organization_id uuid references public.organizations(id) not null,
+  shop_id uuid references public.shops(id) not null,
+  sale_id uuid references public.sales(id) not null,
+  invoice_number text,
+  customer_name text,
+  customer_phone text,
+  pdf_url text,
   status text default 'issued',
-  "issuedAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  issued_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- PLATFORM_ADMINS
 create table if not exists public.platform_admins (
   id uuid default uuid_generate_v4() primary key,
-  "userId" uuid references public.users(id) not null,
+  user_id uuid references public.users(id) not null,
   role text,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- SUBSCRIPTIONS
 create table if not exists public.subscriptions (
   id uuid default uuid_generate_v4() primary key,
-  "organizationId" uuid references public.organizations(id) not null,
-  "planTier" text not null,
-  "billingPeriod" text not null,
+  organization_id uuid references public.organizations(id) not null,
+  plan_tier text not null,
+  billing_period text not null,
   status text not null,
-  "paymentMethod" text,
-  "mobileMoneyRef" text,
-  "paymentReference" text,
-  "activatedBy" uuid references public.users(id),
-  "activatedAt" timestamp with time zone,
-  "rejectionNote" text,
-  "renewalDate" timestamp with time zone,
-  "startDate" timestamp with time zone,
-  "endDate" timestamp with time zone,
-  "createdAt" timestamp with time zone default timezone('utc'::text, now()) not null
+  payment_method text,
+  mobile_money_ref text,
+  payment_reference text,
+  activated_by uuid references public.users(id),
+  activated_at timestamp with time zone,
+  rejection_note text,
+  renewal_date timestamp with time zone,
+  start_date timestamp with time zone,
+  end_date timestamp with time zone,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- Set up Row Level Security (RLS)
@@ -214,6 +214,9 @@ begin
   return new;
 end;
 $$ language plpgsql security definer;
+
+-- Note: you might need to drop the existing trigger first if you run this again
+drop trigger if exists on_auth_user_created on auth.users;
 
 create trigger on_auth_user_created
   after insert on auth.users

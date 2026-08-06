@@ -7,8 +7,16 @@ export const Login: React.FC = () => {
   const [step, setStep] = useState<'EMAIL' | 'LINK_SENT'>('EMAIL');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const { requestEmailOtp } = useAuth();
+  const { requestEmailOtp, isAuthenticated, isAdminAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAdminAuthenticated) {
+      navigate('/platform-admin');
+    } else if (isAuthenticated) {
+      navigate('/app');
+    }
+  }, [isAuthenticated, isAdminAuthenticated, navigate]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

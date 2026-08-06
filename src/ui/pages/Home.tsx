@@ -1,7 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Home: React.FC = () => {
+  const { isAuthenticated, isAdminAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAdminAuthenticated) {
+      navigate('/platform-admin');
+    } else if (isAuthenticated) {
+      navigate('/app');
+    }
+  }, [isAuthenticated, isAdminAuthenticated, navigate]);
+
   return (
     <div className="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex flex-col justify-center items-center relative overflow-hidden font-body-md">
       {/* Decorative background elements */}
