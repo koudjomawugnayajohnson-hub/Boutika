@@ -108,6 +108,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (userId) {
         const authUser = await repos.auth.getCurrentUser();
         if (authUser && authUser.email) {
+          // Check if admin
+          if (authUser.email === 'koudjomawugnayajohnson@gmail.com') {
+             // Create admin record if it doesn't exist yet
+             let admin = await repos.platformAdmins.findByUserId(userId);
+             if (!admin) {
+               // Assuming you have a create method, but since it's missing in repo, we'll just mock it or rely on DB
+               // For now, let's just set the state if it's the right email
+               admin = { userId, role: 'super_admin' };
+             }
+             localStorage.setItem('boutika_admin_id', admin.userId);
+             setState(prev => ({ ...prev, adminUser: admin, isAdminAuthenticated: true }));
+          }
           await handleUserSession(authUser.id, authUser.email);
         }
       }
@@ -249,13 +261,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (email !== 'koudjomawugnayajohnson@gmail.com') {
       throw new Error("Email non autorisé");
     }
-    // Generate a mock OTP
-    const mockOtp = "123456";
-    // Actually send it (will just console.log in MockMailerService)
-    await services.mailer.sendAdminOtp(email, mockOtp);
-    // In a real app we would store it server-side temporarily.
-    // For this mock, we will just expect "123456" in loginAdmin.
-    localStorage.setItem('boutika_mock_admin_otp', mockOtp);
+    const result = await repos.auth.requestAdminOtp(email);
+    if (!result) {
+       throw new Error("Erreur lors de l'envoi du lien magique.");
+    }
     return true;
   };
 

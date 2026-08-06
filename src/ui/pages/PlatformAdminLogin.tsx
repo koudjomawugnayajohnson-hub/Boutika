@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ShieldCheck, Mail, KeyRound, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
 
 export const PlatformAdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
   const [step, setStep] = useState<1 | 2>(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { requestAdminOtp, loginAdmin } = useAuth();
+  const { requestAdminOtp } = useAuth();
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,24 +20,6 @@ export const PlatformAdminLogin: React.FC = () => {
       setStep(2);
     } catch (err: any) {
       setError(err.message || "Erreur lors de la demande.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    try {
-      const success = await loginAdmin(email, otp);
-      if (success) {
-        navigate('/platform-admin');
-      } else {
-        setError("Code OTP incorrect ou accès refusé.");
-      }
-    } catch (err: any) {
-      setError(err.message || "Erreur de connexion.");
     } finally {
       setLoading(false);
     }
@@ -87,43 +68,32 @@ export const PlatformAdminLogin: React.FC = () => {
               disabled={loading || !email}
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center"
             >
-              {loading ? 'Vérification...' : 'Recevoir le code secret'}
+              {loading ? 'Vérification...' : 'Recevoir le lien de connexion'}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Code OTP (voir terminal)</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <KeyRound className="h-5 w-5 text-slate-500" />
-                </div>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="block w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors tracking-[0.5em] font-mono"
-                  placeholder="••••••"
-                  maxLength={6}
-                  required
-                />
-              </div>
+          <div className="text-center space-y-6">
+            <div className="p-6 bg-slate-900/50 rounded-2xl border border-slate-700">
+              <Mail className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white mb-2">Vérifiez votre e-mail</h3>
+              <p className="text-slate-400 text-sm">
+                Un lien magique a été envoyé à l'adresse <br/>
+                <span className="font-semibold text-white">{email}</span>
+              </p>
+              <p className="text-slate-400 text-sm mt-4">
+                Cliquez sur le lien pour vous connecter automatiquement au portail d'administration.
+              </p>
             </div>
-            <button
-              type="submit"
-              disabled={loading || otp.length !== 6}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center"
-            >
-              {loading ? 'Authentification...' : 'Accéder au portail'}
-            </button>
+            
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="w-full text-slate-400 text-sm hover:text-white transition-colors"
+              className="w-full text-slate-400 text-sm hover:text-white transition-colors flex items-center justify-center gap-2"
             >
-              Retour
+              <ArrowLeft className="w-4 h-4" />
+              Changer d'adresse email
             </button>
-          </form>
+          </div>
         )}
       </div>
     </div>
