@@ -47,8 +47,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
         organizationId: newOrg.id,
         userId: user.id,
         role: 'owner',
-        status: 'accepted',
-        invitedBy: user.id
+        status: 'accepted'
       });
 
       await selectOrganization(newOrg.id);

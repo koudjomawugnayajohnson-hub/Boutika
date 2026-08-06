@@ -180,7 +180,7 @@ export const Catalog: React.FC = () => {
                         <span className="font-label-md text-label-md text-on-surface-variant capitalize">{key}</span>
                         <div className="flex gap-1">
                           <span className="px-2 py-0.5 border border-outline-variant rounded font-body-md text-body-md text-xs bg-surface-container-low">
-                            {product.customFields[key]}
+                            {product.customFields?.[key]}
                           </span>
                         </div>
                       </div>

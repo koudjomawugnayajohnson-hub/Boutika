@@ -168,6 +168,15 @@ export class MockAuthRepository implements AuthRepository {
     return { id: user.id, email: user.email! };
   }
 
+  async requestEmailOtp(email: string): Promise<boolean> {
+    return true;
+  }
+
+  async verifyEmailOtp(email: string, otp: string): Promise<{ id: string } | null> {
+    let user = mockDb.users.find(u => u.email === email);
+    return user ? { id: user.id } : null;
+  }
+
   async requestPhoneOtp(phone: string): Promise<boolean> {
     console.log(`[MOCK AUTH] Phone OTP requested for ${phone}`);
     return true;

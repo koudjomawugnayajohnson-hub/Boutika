@@ -91,7 +91,7 @@ export class MockShopRepository implements ShopRepository {
     
     // Check active subscription
     const activeSub = mockDb.subscriptions.find(s => s.organizationId === shop.organizationId && s.status === 'active');
-    const tier = activeSub ? activeSub.tier : org.planTier;
+    const tier = activeSub ? activeSub.planTier : org.planTier;
 
     let limit = 1; // Default 'starter'
     if (tier === 'pro') limit = 3;

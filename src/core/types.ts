@@ -35,6 +35,7 @@ export interface OrganizationMember {
   role: Role;
   invitedAt: string;
   joinedAt?: string;
+  status?: InvitationStatus;
 }
 
 export interface ShopStaff {
@@ -51,6 +52,7 @@ export interface AuditLog {
   entityType?: string;
   entityId?: string;
   metadata?: Record<string, any>;
+  details?: Record<string, any>;
   createdAt: string;
 }
 
@@ -59,10 +61,13 @@ export type InvitationStatus = 'pending' | 'accepted' | 'expired';
 export interface Invitation {
   id: string;
   organizationId: string;
-  phoneOrEmail: string;
+  phoneOrEmail?: string;
+  name?: string;
+  phone?: string;
   role: 'admin' | 'member';
-  shopIds: string[];
-  invitedBy: string;
+  shopIds?: string[];
+  invitedBy?: string;
+  inviterId?: string;
   status: InvitationStatus;
   createdAt: string;
 }
@@ -73,20 +78,25 @@ export interface Product {
   id: string;
   organizationId: string;
   name: string;
+  description?: string;
+  barcode?: string;
   category?: string;
   price: number;
+  cost?: number;
+  lowStockThreshold?: number;
   imageUrl?: string;
-  customFields: Record<string, any>;
+  customFields?: Record<string, any>;
   status: ProductStatus;
   createdAt: string;
 }
 
 export interface InventoryItem {
   id: string;
+  organizationId?: string;
   shopId: string;
   productId: string;
   quantity: number;
-  lowStockThreshold: number;
+  lowStockThreshold?: number;
   updatedAt: string;
 }
 
@@ -99,8 +109,10 @@ export interface Sale {
   organizationId: string;
   status: SaleStatus;
   total?: number;
+  totalAmount?: number;
   paymentMethod?: PaymentMethod;
   createdBy?: string;
+  cashierId?: string;
   customerName?: string;
   createdAt: string;
 }
@@ -111,6 +123,7 @@ export interface SaleItem {
   productId: string;
   quantity: number;
   unitPrice: number;
+  subtotal?: number;
 }
 
 export type InvoiceStatus = 'issued' | 'cancelled';
@@ -120,15 +133,19 @@ export interface Invoice {
   organizationId: string;
   shopId: string;
   saleId: string;
+  invoiceNumber?: string;
+  customerName?: string;
+  customerPhone?: string;
   pdfUrl?: string;
-  status: InvoiceStatus;
+  status?: InvoiceStatus;
   issuedAt: string;
 }
 
 export interface PlatformAdmin {
-  id: string;
+  id?: string;
   userId: string;
-  createdAt: string;
+  role?: string;
+  createdAt?: string;
 }
 
 export type BillingPeriod = 'monthly' | 'annual';
@@ -148,5 +165,7 @@ export interface Subscription {
   activatedAt?: string;
   rejectionNote?: string;
   renewalDate?: string;
+  startDate?: string;
+  endDate?: string;
   createdAt: string;
 }

@@ -234,6 +234,7 @@ export class SupabaseProductRepository implements ProductRepository {
       price: data.price,
       cost: data.cost,
       lowStockThreshold: data.low_stock_threshold,
+      status: data.status || 'active',
       createdAt: data.created_at
     };
   }
@@ -251,6 +252,7 @@ export class SupabaseProductRepository implements ProductRepository {
       price: d.price,
       cost: d.cost,
       lowStockThreshold: d.low_stock_threshold,
+      status: d.status || 'active',
       createdAt: d.created_at
     }));
   }
@@ -277,6 +279,7 @@ export class SupabaseProductRepository implements ProductRepository {
       price: data.price,
       cost: data.cost,
       lowStockThreshold: data.low_stock_threshold,
+      status: data.status || 'active',
       createdAt: data.created_at
     };
   }
@@ -303,6 +306,7 @@ export class SupabaseProductRepository implements ProductRepository {
       price: data.price,
       cost: data.cost,
       lowStockThreshold: data.low_stock_threshold,
+      status: data.status || 'active',
       createdAt: data.created_at
     };
   }

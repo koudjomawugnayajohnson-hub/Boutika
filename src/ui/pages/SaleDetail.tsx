@@ -69,7 +69,7 @@ const InvoicePDF = ({ sale, items, products, org, shop }: { sale: Sale, items: S
         ))}
       </View>
 
-      <Text style={pdfStyles.total}>Total TTC: {sale.total.toFixed(2)} €</Text>
+      <Text style={pdfStyles.total}>Total TTC: {(sale.total || 0).toFixed(2)} €</Text>
     </Page>
   </Document>
 );
@@ -83,22 +83,19 @@ export const SaleDetail: React.FC<{ saleId: string; onBack: () => void }> = ({ s
 
   useEffect(() => {
     const loadData = async () => {
-      if (!currentOrganization) return;
+      if (!currentOrganization || !currentShop) return;
       const repos = getRepositories();
 
       // We need a findById for Sales, assuming it exists or we mock it.
       // Wait, in MockRepositories, we don't have SaleRepository exported fully yet.
       // But we can get it from repos.sales (we assume repos.sales has findById but wait...)
       // Let's assume we fetch all and filter for now if not sure.
-      const allSales = await repos.sales.findRecent(currentOrganization.id, currentShop?.id, 100);
+      const allSales = await repos.sales.findRecent(currentOrganization.id, currentShop.id, 100);
       const foundSale = allSales.find(s => s.id === saleId);
       
       if (foundSale) {
         setSale(foundSale);
-        // Assuming findItemsBySaleId exists
-        // Wait, what methods does SaleItemRepository have? 
-        // Let's assume it has findBySaleId or similar.
-        const saleItems = (await repos.saleItems.findBySaleId ? await repos.saleItems.findBySaleId(saleId) : []);
+        const saleItems = (await repos.saleItems.findAllBySale ? await repos.saleItems.findAllBySale(currentOrganization.id, currentShop.id, saleId) : []);
         setItems(saleItems);
 
         const orgProducts = await repos.products.findAllByOrganization(currentOrganization.id);
@@ -200,7 +197,7 @@ export const SaleDetail: React.FC<{ saleId: string; onBack: () => void }> = ({ s
         <div className="flex justify-end pt-md border-t border-outline-variant">
           <div className="text-right">
             <span className="font-title-lg text-title-lg text-on-surface-variant mr-4">Total TTC</span>
-            <span className="font-display-lg text-display-lg text-primary font-bold">{sale.total.toFixed(2)} €</span>
+            <span className="font-headline-sm text-headline-sm text-on-surface">{(sale.total || 0).toFixed(2)} €</span>
           </div>
         </div>
       </div>

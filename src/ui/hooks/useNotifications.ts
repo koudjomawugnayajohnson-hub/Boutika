@@ -26,7 +26,7 @@ export const useNotifications = () => {
 
       // 1. Low Stock Notifications
       const inventory = await repos.inventory.findAllByShop(currentOrganization.id, currentShop.id);
-      const lowStockItems = inventory.filter(i => i.quantity <= i.lowStockThreshold);
+      const lowStockItems = inventory.filter(i => i.lowStockThreshold !== undefined && i.quantity <= i.lowStockThreshold);
 
       for (const item of lowStockItems) {
         const product = await repos.products.findById(currentOrganization.id, item.productId);

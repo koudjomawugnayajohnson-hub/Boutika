@@ -69,7 +69,7 @@ export const Inventory: React.FC = () => {
     );
   }
   const outOfStockCount = inventory.filter(i => i.quantity === 0).length;
-  const lowStockCount = inventory.filter(i => i.quantity > 0 && i.quantity <= i.lowStockThreshold).length;
+  const lowStockCount = inventory.filter(i => i.quantity > 0 && i.lowStockThreshold !== undefined && i.quantity <= i.lowStockThreshold).length;
 
   return (
     <div className="max-w-container-max mx-auto px-gutter md:px-lg py-md md:py-lg">
@@ -192,7 +192,7 @@ export const Inventory: React.FC = () => {
                   if (!product) return null;
                   
                   const isOutOfStock = item.quantity === 0;
-                  const isLowStock = item.quantity > 0 && item.quantity <= item.lowStockThreshold;
+                  const isLowStock = item.quantity > 0 && item.lowStockThreshold !== undefined && item.quantity <= item.lowStockThreshold;
 
                   return (
                     <tr key={item.id} className="hover:bg-surface-container-lowest transition-colors">

@@ -82,11 +82,11 @@ describe('Subscription Module (Shop Limits)', () => {
     mockDb.subscriptions.push({
       id: 'sub-1',
       organizationId: org.id,
-      tier: 'pro',
-      billingCycle: 'monthly',
+      planTier: 'pro',
+      billingPeriod: 'monthly',
       status: 'active',
-      startDate: new Date(),
-      createdAt: new Date(),
+      startDate: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     });
 
     // 2nd should now succeed
