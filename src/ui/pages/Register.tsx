@@ -6,7 +6,6 @@ import { Store, Settings, PieChart, Users, Package, HeartHandshake, Eye, EyeOff 
 
 const registerSchema = z.object({
   name: z.string().min(2, "Le nom de l'entreprise doit contenir au moins 2 caractères"),
-  email: z.string().email("Adresse courriel invalide").optional().or(z.literal('')),
   phone: z.string().regex(/^\+?[0-9]{6,15}$/, "Numéro de téléphone invalide"),
   pin: z.string().regex(/^[0-9]{6}$/, "Le mot de passe (PIN) doit contenir exactement 6 chiffres"),
   confirmPin: z.string()
@@ -16,7 +15,7 @@ const registerSchema = z.object({
 });
 
 export const Register: React.FC = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', pin: '', confirmPin: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', pin: '', confirmPin: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPin, setShowPin] = useState(false);
@@ -141,31 +140,18 @@ export const Register: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Nom de l'entreprise *"
-                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
+                className={`w-full bg-white px-4 py-3.5 border rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
               />
               {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
             </div>
 
-            {/* Adresse courriel */}
-            <div>
-              <input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Adresse courriel *"
-                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.email ? 'border-red-500' : 'border-slate-300'}`}
-              />
-              {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
-            </div>
-
             {/* Numéro de téléphone */}
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center border border-r-0 border-slate-300 rounded-l-md bg-slate-50 overflow-hidden">
+            <div className={`flex bg-white border rounded-lg focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-transparent overflow-hidden transition-colors ${errors.phone ? 'border-red-500 focus-within:ring-red-500' : 'border-slate-300'}`}>
+              <div className="flex-shrink-0 flex items-center bg-slate-50 border-r border-slate-300">
                 <select
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
-                  className="w-full h-full px-3 py-3 bg-transparent text-sm text-slate-700 font-medium focus:outline-none cursor-pointer appearance-none"
+                  className="h-full px-3 py-3.5 bg-transparent text-sm text-slate-900 font-medium focus:outline-none cursor-pointer appearance-none"
                   style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%2364748b\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.2rem center', paddingRight: '1.5rem' }}
                 >
                   {countryCodes.map(c => (
@@ -173,31 +159,29 @@ export const Register: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className="relative w-full">
-                <input
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Numéro de téléphone *"
-                  className={`w-full px-4 py-3 border rounded-r-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.phone ? 'border-red-500' : 'border-slate-300'}`}
-                />
-              </div>
+              <input
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Numéro de téléphone *"
+                className="w-full px-4 py-3.5 bg-transparent text-slate-900 placeholder-slate-400 focus:outline-none"
+              />
             </div>
             {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
 
             {/* Mot de passe (PIN) */}
             <div className="relative">
-              <input
-                name="pin"
-                type={showPin ? "text" : "password"}
-                inputMode="numeric"
-                maxLength={6}
-                value={formData.pin}
-                onChange={handleChange}
-                placeholder="Mot de passe (PIN à 6 chiffres) *"
-                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors pr-10 ${errors.pin ? 'border-red-500' : 'border-slate-300'}`}
-              />
+                <input
+                  name="pin"
+                  type={showPin ? "text" : "password"}
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={formData.pin}
+                  onChange={handleChange}
+                  placeholder="Mot de passe (PIN à 6 chiffres) *"
+                  className={`w-full bg-white px-4 py-3.5 border rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors pr-10 ${errors.pin ? 'border-red-500' : 'border-slate-300'}`}
+                />
               <button
                 type="button"
                 onClick={() => setShowPin(!showPin)}
@@ -210,16 +194,16 @@ export const Register: React.FC = () => {
 
             {/* Confirmer Mot de passe (PIN) */}
             <div className="relative">
-              <input
-                name="confirmPin"
-                type={showConfirmPin ? "text" : "password"}
-                inputMode="numeric"
-                maxLength={6}
-                value={formData.confirmPin}
-                onChange={handleChange}
-                placeholder="Confirmer le mot de passe *"
-                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors pr-10 ${errors.confirmPin ? 'border-red-500' : 'border-slate-300'}`}
-              />
+                <input
+                  name="confirmPin"
+                  type={showConfirmPin ? "text" : "password"}
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={formData.confirmPin}
+                  onChange={handleChange}
+                  placeholder="Confirmer le mot de passe *"
+                  className={`w-full bg-white px-4 py-3.5 border rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors pr-10 ${errors.confirmPin ? 'border-red-500' : 'border-slate-300'}`}
+                />
               <button
                 type="button"
                 onClick={() => setShowConfirmPin(!showConfirmPin)}
@@ -237,7 +221,7 @@ export const Register: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#475569] hover:bg-[#334155] text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 mt-6 flex items-center justify-center shadow-sm"
+              className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-3.5 px-4 rounded-lg transition-colors disabled:opacity-50 mt-6 flex items-center justify-center shadow-sm"
             >
               {isLoading ? (
                 <span className="material-symbols-rounded animate-spin">progress_activity</span>
