@@ -55,7 +55,7 @@ export const Home: React.FC = () => {
         </div>
         
         {/* Right Side: Illustration/Bento */}
-        <div className="flex-1 w-full max-w-xl relative">
+        <div className="hidden sm:block flex-1 w-full max-w-xl relative mt-8 md:mt-0">
           {/* Glassmorphism Card Overlay */}
           <div className="absolute -right-4 md:-right-8 -bottom-6 bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant rounded-xl p-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] z-20 hidden md:flex flex-col gap-xs w-48">
             <div className="text-label-md font-label-md text-on-surface-variant uppercase">Ventes du jour</div>
@@ -65,10 +65,10 @@ export const Home: React.FC = () => {
             </div>
           </div>
           {/* Main Image Container */}
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-outline-variant aspect-video bg-surface-container relative group">
-            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Un professionnel utilisant Boutika" src="/hero_image.jpg" fetchPriority="high" />
+          <div className="rounded-2xl overflow-hidden shadow-xl border border-outline-variant aspect-video bg-surface-container relative group">
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Un professionnel utilisant Boutika" src="/hero-boutika.webp" fetchPriority="high" />
             {/* Overlay subtle gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
           </div>
         </div>
       </main>
