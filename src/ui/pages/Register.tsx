@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { t } from '../i18n';
 import { z } from 'zod';
+import { Store, Settings, PieChart, Users, Package, HeartHandshake, Eye, EyeOff } from 'lucide-react';
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Le nom de l'organisation doit contenir au moins 2 caractères"),
-  phone: z.string().regex(/^\\+[1-9]\\d{6,14}$/, "Numéro de téléphone invalide (format international requis, ex: +228...)"),
-  pin: z.string().regex(/^[0-9]{6}$/, "Le code PIN doit contenir exactement 6 chiffres"),
+  name: z.string().min(2, "Le nom de l'entreprise doit contenir au moins 2 caractères"),
+  email: z.string().email("Adresse courriel invalide").optional().or(z.literal('')),
+  phone: z.string().regex(/^\+?[0-9]{6,15}$/, "Numéro de téléphone invalide"),
+  pin: z.string().regex(/^[0-9]{6}$/, "Le mot de passe (PIN) doit contenir exactement 6 chiffres"),
   confirmPin: z.string()
 }).refine((data) => data.pin === data.confirmPin, {
-  message: "Les codes PIN ne correspondent pas",
+  message: "Les mots de passe ne correspondent pas",
   path: ["confirmPin"],
 });
 
 export const Register: React.FC = () => {
-  const [formData, setFormData] = useState({ name: '', phone: '', pin: '', confirmPin: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', pin: '', confirmPin: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPin, setShowPin] = useState(false);
+  const [showConfirmPin, setShowConfirmPin] = useState(false);
   const navigate = useNavigate();
   const { signUpWithPhone } = useAuth();
 
@@ -27,14 +30,12 @@ export const Register: React.FC = () => {
     setErrors({});
 
     try {
-      // Validation Zod
       const validatedData = registerSchema.parse(formData);
-      
       localStorage.setItem('boutika_pending_org_name', validatedData.name);
+      
+      // The current backend system uses Phone and PIN
       await signUpWithPhone(validatedData.phone, validatedData.pin);
       
-      // La connexion est automatique après un signUp réussi (sans email/sms confirm)
-      // La redirection se fera via le AuthContext (Home) ou ici.
       navigate('/app');
     } catch (err: any) {
       if (err && err.errors && Array.isArray(err.errors)) {
@@ -44,7 +45,7 @@ export const Register: React.FC = () => {
         });
         setErrors(newErrors);
       } else {
-        setErrors({ general: err.message || t('auth.registerError') });
+        setErrors({ general: err.message || "Une erreur est survenue lors de l'inscription." });
       }
     } finally {
       setIsLoading(false);
@@ -52,113 +53,180 @@ export const Register: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-4">
-            <span className="material-symbols-rounded text-2xl">storefront</span>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">{t('auth.registerTitle')}</h2>
-          <p className="text-gray-500 mt-2">{t('auth.registerSubtitle')}</p>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans text-slate-800">
+      
+      {/* Left Section (Hero / Info) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#F8FAFC] border-r border-slate-200 flex-col justify-center px-12 xl:px-24">
+        
+        <div className="mb-12 flex items-center gap-2">
+          <Store className="w-8 h-8 text-slate-800" />
+          <span className="text-2xl font-bold text-slate-900 tracking-tight">Boutika</span>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-6">
-          {errors.general && (
-            <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg">
-              {errors.general}
-            </div>
-          )}
+        <h1 className="text-4xl xl:text-5xl font-bold text-slate-900 leading-tight mb-6">
+          Gérez votre boutique avec élégance et précision
+        </h1>
+        
+        <p className="text-lg text-slate-600 mb-12 max-w-lg leading-relaxed">
+          Une plateforme complète pour centraliser vos opérations, de la gestion des stocks à la relation client. Activez les modules selon vos besoins.
+        </p>
 
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              {t('common.organizationName')}
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder={t('common.organizationName')}
-            />
-            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+        {/* Feature Grid */}
+        <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <PieChart className="w-5 h-5 text-slate-700" /> Ventes
           </div>
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <Store className="w-5 h-5 text-slate-700" /> Comptabilité
+          </div>
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <Settings className="w-5 h-5 text-slate-700" /> Opérations
+          </div>
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <Users className="w-5 h-5 text-slate-700" /> GRH
+          </div>
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <Package className="w-5 h-5 text-slate-700" /> Inventaire
+          </div>
+          <div className="flex items-center gap-3 font-semibold text-slate-800">
+            <HeartHandshake className="w-5 h-5 text-slate-700" /> CRM
+          </div>
+        </div>
+      </div>
 
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-              Numéro de téléphone
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="+228..."
-            />
-            {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
-          </div>
+      {/* Right Section (Form) */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-[440px]">
           
-          <div>
-            <label htmlFor="pin" className="block text-sm font-medium text-gray-700 mb-1">
-              Code PIN (6 chiffres)
-            </label>
-            <input
-              id="pin"
-              type="password"
-              inputMode="numeric"
-              maxLength={6}
-              value={formData.pin}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors tracking-[0.5em] font-mono text-center ${errors.pin ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="••••••"
-            />
-            {errors.pin && <p className="mt-1 text-xs text-red-600">{errors.pin}</p>}
-          </div>
-          
-          <div>
-            <label htmlFor="confirmPin" className="block text-sm font-medium text-gray-700 mb-1">
-              Confirmer le Code PIN
-            </label>
-            <input
-              id="confirmPin"
-              type="password"
-              inputMode="numeric"
-              maxLength={6}
-              value={formData.confirmPin}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors tracking-[0.5em] font-mono text-center ${errors.confirmPin ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="••••••"
-            />
-            {errors.confirmPin && <p className="mt-1 text-xs text-red-600">{errors.confirmPin}</p>}
-          </div>
+          <h2 className="text-3xl font-bold text-slate-900 mb-8">Créer un compte</h2>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            {isLoading ? (
-              <span className="material-symbols-rounded animate-spin">progress_activity</span>
-            ) : (
-              t('auth.registerAction')
+          <form onSubmit={handleRegister} className="space-y-4">
+            {errors.general && (
+              <div className="p-3 bg-red-50 text-red-700 text-sm rounded-md">
+                {errors.general}
+              </div>
             )}
-          </button>
-        </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
-          {t('auth.alreadyHaveAccount')}{' '}
-          <button
-            onClick={() => navigate('/login')}
-            className="text-blue-600 hover:bg-blue-50 font-medium px-2 py-1 rounded"
-          >
-            {t('auth.loginTitle')}
-          </button>
+            {/* Nom de l'entreprise */}
+            <div>
+              <input
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Nom de l'entreprise *"
+                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.name ? 'border-red-500' : 'border-slate-300'}`}
+              />
+              {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+            </div>
+
+            {/* Adresse courriel */}
+            <div>
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Adresse courriel *"
+                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.email ? 'border-red-500' : 'border-slate-300'}`}
+              />
+              {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
+            </div>
+
+            {/* Numéro de téléphone */}
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center justify-center px-3 border border-r-0 border-slate-300 rounded-l-md bg-white text-sm text-slate-600">
+                <span className="font-medium mr-1">TG</span> +228
+              </div>
+              <div className="relative w-full">
+                <input
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Numéro de téléphone *"
+                  className={`w-full px-4 py-3 border rounded-r-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors ${errors.phone ? 'border-red-500' : 'border-slate-300'}`}
+                />
+              </div>
+            </div>
+            {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
+
+            {/* Mot de passe (PIN) */}
+            <div className="relative">
+              <input
+                name="pin"
+                type={showPin ? "text" : "password"}
+                inputMode="numeric"
+                maxLength={6}
+                value={formData.pin}
+                onChange={handleChange}
+                placeholder="Mot de passe (PIN à 6 chiffres) *"
+                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors pr-10 ${errors.pin ? 'border-red-500' : 'border-slate-300'}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPin(!showPin)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+              >
+                {showPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            {errors.pin && <p className="mt-1 text-xs text-red-600">{errors.pin}</p>}
+
+            {/* Confirmer Mot de passe (PIN) */}
+            <div className="relative">
+              <input
+                name="confirmPin"
+                type={showConfirmPin ? "text" : "password"}
+                inputMode="numeric"
+                maxLength={6}
+                value={formData.confirmPin}
+                onChange={handleChange}
+                placeholder="Confirmer le mot de passe *"
+                className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors pr-10 ${errors.confirmPin ? 'border-red-500' : 'border-slate-300'}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPin(!showConfirmPin)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+              >
+                {showConfirmPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            {errors.confirmPin && <p className="mt-1 text-xs text-red-600">{errors.confirmPin}</p>}
+
+            <p className="text-sm text-slate-500 mt-4 leading-relaxed">
+              En vous inscrivant, vous acceptez les <a href="#" className="font-medium text-slate-700 hover:underline">conditions générales</a> et la <a href="#" className="font-medium text-slate-700 hover:underline">politique de confidentialité de Boutika</a>.
+            </p>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-[#475569] hover:bg-[#334155] text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 mt-6 flex items-center justify-center shadow-sm"
+            >
+              {isLoading ? (
+                <span className="material-symbols-rounded animate-spin">progress_activity</span>
+              ) : (
+                "Commencer gratuitement"
+              )}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center text-slate-600">
+            Vous avez un compte ?{' '}
+            <Link to="/login" className="font-bold text-slate-700 hover:underline">
+              Se connecter
+            </Link>
+          </div>
         </div>
+      </div>
+    </div>
+  );
+};>
       </div>
     </div>
   );
