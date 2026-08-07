@@ -69,9 +69,8 @@ export const Features: React.FC = () => {
               <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Création de produits en 1 clic</li>
             </ul>
           </div>
-          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner">
-            {/* Placeholder Visuel */}
-            <span className="text-slate-400 font-medium">[Visuel : Interface du catalogue produit]</span>
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
+            <img src="/catalogue_produit.png" alt="Interface du catalogue produit" className="w-full h-full object-cover rounded-xl shadow-sm" />
           </div>
         </div>
 
@@ -90,9 +89,8 @@ export const Features: React.FC = () => {
               <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Sécurité des accès employés</li>
             </ul>
           </div>
-          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner">
-             {/* Placeholder Visuel */}
-             <span className="text-slate-400 font-medium">[Visuel : Dashboard avec carte multi-boutiques]</span>
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
+             <img src="/dashboard_multiboutique.png" alt="Dashboard multi-boutiques" className="w-full h-full object-cover rounded-xl shadow-sm" />
           </div>
         </div>
       </section>
