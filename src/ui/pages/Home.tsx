@@ -66,7 +66,7 @@ export const Home: React.FC = () => {
           </div>
           {/* Main Image Container */}
           <div className="rounded-2xl overflow-hidden shadow-xl border border-outline-variant aspect-video bg-surface-container relative group">
-            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Un professionnel utilisant Boutika" src="/hero-boutika.png" fetchPriority="high" />
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Un professionnel utilisant Boutika" src="/hero-boutika.webp" fetchPriority="high" />
             {/* Overlay subtle gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
           </div>
