@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { TestimonialMarquee } from '../components/TestimonialMarquee';
 
 export const Home: React.FC = () => {
   const { isAuthenticated, isAdminAuthenticated } = useAuth();
@@ -71,6 +72,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Testimonials */}
+      <TestimonialMarquee />
     </div>
   );
 };
