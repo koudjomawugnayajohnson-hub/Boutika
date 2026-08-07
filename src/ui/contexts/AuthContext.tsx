@@ -216,6 +216,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('boutika_user_id');
     localStorage.removeItem('boutika_org_id');
     localStorage.removeItem('boutika_shop_id');
+    localStorage.removeItem('boutika_admin_id');
+    localStorage.removeItem('boutika_mock_admin_otp');
     setState({
       user: null,
       currentOrganization: null,

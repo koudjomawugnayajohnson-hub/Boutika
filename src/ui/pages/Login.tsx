@@ -17,10 +17,10 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAdminAuthenticated) {
-      navigate('/platform-admin');
-    } else if (isAuthenticated) {
+    if (isAuthenticated) {
       navigate('/app');
+    } else if (isAdminAuthenticated) {
+      navigate('/platform-admin');
     }
   }, [isAuthenticated, isAdminAuthenticated, navigate]);
 
