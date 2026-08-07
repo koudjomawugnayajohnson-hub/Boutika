@@ -5,9 +5,29 @@ import { Box, Store, Smartphone, BarChart3, FileText, Layers, CheckCircle } from
 export const Features: React.FC = () => {
   return (
     <main className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100">
-      
+      {/* NOUVEAU : HEADER DE NAVIGATION STRICTEMENT POUR LA PAGE MARKETING */}
+      {/* sticky top-0 permet au menu de rester visible quand on scrolle */}
+      <header className="sticky top-0 z-50 w-full flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-sm border-b border-slate-100">
+        
+        {/* Logo cliquable (Retour Accueil) */}
+        <Link to="/" className="flex items-center gap-2 group">
+          <Store className="w-6 h-6 text-blue-700 group-hover:opacity-80 transition-opacity" />
+          <span className="text-xl font-bold text-blue-700 group-hover:opacity-80 transition-opacity">
+            Boutika
+          </span>
+        </Link>
+
+        {/* Bouton de Connexion */}
+        <Link 
+          to="/login" 
+          className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+        >
+          Connexion
+        </Link>
+      </header>
+
       {/* 1. HERO SECTION (En-tête) */}
-      <section className="max-w-5xl mx-auto px-6 pt-24 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-6 pt-20 pb-20 text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
           Boutika aide les boutiques indépendantes à gérer leurs ventes.
         </h1>
