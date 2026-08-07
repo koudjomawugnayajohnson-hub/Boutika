@@ -24,13 +24,19 @@ export const Register: React.FC = () => {
   const navigate = useNavigate();
   const { signUpWithPhone } = useAuth();
 
+  const [countryCode, setCountryCode] = useState('+228');
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setErrors({});
 
     try {
-      const validatedData = registerSchema.parse(formData);
+      // Combine country code and phone number for validation and submission
+      const fullPhone = formData.phone.startsWith('+') ? formData.phone : `${countryCode}${formData.phone.replace(/^0+/, '')}`;
+      const dataToValidate = { ...formData, phone: fullPhone };
+      
+      const validatedData = registerSchema.parse(dataToValidate);
       localStorage.setItem('boutika_pending_org_name', validatedData.name);
       
       // The current backend system uses Phone and PIN
@@ -55,6 +61,17 @@ export const Register: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const countryCodes = [
+    { code: '+228', label: 'TG +228' },
+    { code: '+229', label: 'BJ +229' },
+    { code: '+225', label: 'CI +225' },
+    { code: '+226', label: 'BF +226' },
+    { code: '+227', label: 'NE +227' },
+    { code: '+224', label: 'GN +224' },
+    { code: '+221', label: 'SN +221' },
+    { code: '+223', label: 'ML +223' },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans text-slate-800">
@@ -139,8 +156,17 @@ export const Register: React.FC = () => {
 
             {/* Numéro de téléphone */}
             <div className="flex">
-              <div className="flex-shrink-0 flex items-center justify-center px-3 border border-r-0 border-slate-300 rounded-l-md bg-white text-sm text-slate-600">
-                <span className="font-medium mr-1">TG</span> +228
+              <div className="flex-shrink-0 flex items-center border border-r-0 border-slate-300 rounded-l-md bg-slate-50 overflow-hidden">
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="w-full h-full px-3 py-3 bg-transparent text-sm text-slate-700 font-medium focus:outline-none cursor-pointer appearance-none"
+                  style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%2364748b\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.2rem center', paddingRight: '1.5rem' }}
+                >
+                  {countryCodes.map(c => (
+                    <option key={c.code} value={c.code}>{c.label}</option>
+                  ))}
+                </select>
               </div>
               <div className="relative w-full">
                 <input
