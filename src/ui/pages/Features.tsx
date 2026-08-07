@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Store, Smartphone, BarChart3, FileText, Layers, CheckCircle } from 'lucide-react';
+import { TestimonialMarquee } from '../components/TestimonialMarquee';
 
 export const Features: React.FC = () => {
   return (
@@ -144,6 +145,9 @@ export const Features: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Testimonials */}
+      <TestimonialMarquee />
 
       {/* 4. BOTTOM CTA (Appel à l'action final) */}
       <section className="max-w-4xl mx-auto px-6 py-24 text-center">
