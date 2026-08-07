@@ -28,9 +28,9 @@ export const Layout: React.FC = () => {
     <div className="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col pb-[80px] md:pb-0">
       <header className="w-full top-0 sticky bg-surface-bright border-b border-outline-variant z-40 shrink-0">
         <div className="flex items-center justify-between px-lg h-16 w-full max-w-container-max mx-auto">
-          <div className="flex items-center gap-sm">
+          <Link to="/" className="flex items-center gap-sm cursor-pointer hover:opacity-80 transition-opacity">
             <div className="font-headline-md text-headline-md text-primary">Boutika</div>
-          </div>
+          </Link>
           <div className="flex items-center gap-sm bg-surface-container-low border border-outline-variant rounded px-sm py-xs cursor-pointer hover:bg-surface-variant transition-colors" data-testid="shop-selector">
             <span className="material-symbols-outlined text-on-surface-variant text-[20px]">storefront</span>
             <span className="font-label-md text-label-md text-on-surface">
