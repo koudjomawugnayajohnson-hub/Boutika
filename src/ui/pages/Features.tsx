@@ -70,7 +70,7 @@ export const Features: React.FC = () => {
             </ul>
           </div>
           <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
-            <img src="/catalogue_produit.png" alt="Interface du catalogue produit" className="w-full h-full object-cover rounded-xl shadow-sm" />
+            <img src="/catalogue_produit.png" alt="Interface du catalogue produit" loading="lazy" decoding="async" className="w-full h-full object-cover rounded-xl shadow-sm" />
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export const Features: React.FC = () => {
             </ul>
           </div>
           <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
-             <img src="/dashboard_multiboutique.png" alt="Dashboard multi-boutiques" className="w-full h-full object-cover rounded-xl shadow-sm" />
+             <img src="/dashboard_multiboutique.png" alt="Dashboard multi-boutiques" loading="lazy" decoding="async" className="w-full h-full object-cover rounded-xl shadow-sm" />
           </div>
         </div>
       </section>
