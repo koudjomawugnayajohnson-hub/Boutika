@@ -37,9 +37,9 @@ export const Home: React.FC = () => {
               Commencer
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </Link>
-            <button className="border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors rounded px-md py-xs text-label-md font-label-md flex items-center justify-center gap-xs">
+            <Link to="/fonctionnalites" className="border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors rounded px-md py-xs text-label-md font-label-md flex items-center justify-center gap-xs">
               Découvrir les fonctionnalités
-            </button>
+            </Link>
           </div>
           <div className="mt-xl flex items-center gap-md">
             <div className="flex -space-x-2">
