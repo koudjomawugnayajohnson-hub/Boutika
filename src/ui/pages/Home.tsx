@@ -65,10 +65,10 @@ export const Home: React.FC = () => {
             </div>
           </div>
           {/* Main Image Container */}
-          <div className="rounded-xl overflow-hidden shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-outline-variant aspect-[4/3] bg-surface-container relative">
-            <img className="w-full h-full object-cover" alt="Boutique" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF3_dY0-6UnYJeT4NdZ5gPPkZPlZHQplWb-Av23chKZhg0wCcQ-Lz7CheoUg1PkVITIvSKSxJxcR69DkW9bJOE71rBfg5IzywQcQtoWwgbvjeGcx15Z5Z0TTUXd_bMnUr_gYQ1h1GrHAggHXGyZ6Ufyd3CYBLyIOzM1wwNv8T24-IrZQRXnHn23WUz7sd8d-yemtztJJDuE3YkpyjD5e3E1LNPaGU0BCQj8iOq2X8se5V6MtIl535C" />
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-outline-variant aspect-video bg-surface-container relative group">
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Un professionnel utilisant Boutika" src="/hero_image.png" fetchPriority="high" />
             {/* Overlay subtle gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
           </div>
         </div>
       </main>
