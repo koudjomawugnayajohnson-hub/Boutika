@@ -113,6 +113,11 @@ export const Register: React.FC = () => {
             <HeartHandshake className="w-5 h-5 text-slate-700" /> CRM
           </div>
         </div>
+
+        {/* Dashboard Mockup Image */}
+        <div className="mt-12 rounded-xl overflow-hidden border border-slate-200 shadow-xl">
+           <img src="/dashboard_multiboutique.png" alt="Interface Boutika" className="w-full h-auto object-cover" />
+        </div>
       </div>
 
       {/* Right Section (Form) */}
@@ -249,10 +254,6 @@ export const Register: React.FC = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};>
       </div>
     </div>
   );
