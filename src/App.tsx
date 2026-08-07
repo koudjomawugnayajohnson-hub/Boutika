@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from '
 import { AuthProvider } from './ui/contexts/AuthContext';
 import { Layout } from './ui/components/Layout';
 import { Home } from './ui/pages/Home';
+import { Features } from './ui/pages/Features';
 import { Login } from './ui/pages/Login';
 import { Register } from './ui/pages/Register';
 import { Dashboard } from './ui/pages/Dashboard';
@@ -30,6 +31,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/fonctionnalites" element={<Features />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/app" element={<Layout />}>
