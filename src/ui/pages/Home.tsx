@@ -6,13 +6,7 @@ export const Home: React.FC = () => {
   const { isAuthenticated, isAdminAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/app');
-    } else if (isAdminAuthenticated) {
-      navigate('/platform-admin');
-    }
-  }, [isAuthenticated, isAdminAuthenticated, navigate]);
+  // Removed auto-redirect so users can see the landing page
 
   return (
     <div className="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex flex-col justify-center items-center relative overflow-hidden font-body-md">
