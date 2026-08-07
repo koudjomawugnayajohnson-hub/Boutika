@@ -57,7 +57,7 @@ export const Home: React.FC = () => {
         {/* Right Side: Illustration/Bento */}
         <div className="flex-1 w-full max-w-xl relative">
           {/* Glassmorphism Card Overlay */}
-          <div className="absolute -left-md top-10 bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant rounded-xl p-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] z-20 hidden md:flex flex-col gap-xs w-48">
+          <div className="absolute -right-4 md:-right-8 -bottom-6 bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant rounded-xl p-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] z-20 hidden md:flex flex-col gap-xs w-48">
             <div className="text-label-md font-label-md text-on-surface-variant uppercase">Ventes du jour</div>
             <div className="text-title-lg font-title-lg text-on-surface">€1,240.50</div>
             <div className="flex items-center text-tertiary-container text-label-md font-label-md gap-1">
