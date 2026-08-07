@@ -1,79 +1,146 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Store, Smartphone, BarChart3, FileText, Layers, CheckCircle } from 'lucide-react';
 
 export const Features: React.FC = () => {
-  const features = [
-    {
-      icon: 'inventory',
-      title: 'Zéro Rupture de Stock',
-      description: 'Suivi en temps réel de votre inventaire pour ne jamais manquer une vente.',
-    },
-    {
-      icon: 'admin_panel_settings',
-      title: 'Contrôle Absolu',
-      description: 'Gestion fine des accès employés et sécurisation de vos données sensibles.',
-    },
-    {
-      icon: 'point_of_sale',
-      title: 'Encaissement Haute Vitesse',
-      description: 'Caisse rapide, interface intuitive et impression de tickets thermiques.',
-    },
-    {
-      icon: 'query_stats',
-      title: 'Tableaux de bord consolidés',
-      description: 'Pilotez l\'ensemble de vos boutiques (multi-boutiques) avec des statistiques unifiées.',
-    }
-  ];
-
   return (
-    <div className="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex flex-col font-body-md relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 flex justify-center items-center">
-        <div className="w-[800px] h-[800px] rounded-full bg-gradient-to-br from-primary-fixed to-transparent blur-3xl absolute -top-40 -right-40"></div>
-        <div className="w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-secondary-container to-transparent blur-3xl absolute -bottom-20 -left-20"></div>
-      </div>
-
-      <header className="w-full max-w-container-max mx-auto px-lg md:px-xl py-md flex items-center justify-between z-10 relative">
-        <Link to="/" className="text-primary font-title-lg text-title-lg flex items-center gap-xs hover:opacity-80 transition-opacity">
-          <span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>storefront</span>
-          Boutika
-        </Link>
-        <Link to="/login" className="bg-primary text-on-primary hover:bg-surface-tint transition-colors rounded px-md py-xs text-label-md font-label-md flex items-center justify-center gap-xs shadow-sm">
-          Se connecter
-        </Link>
-      </header>
+    <main className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100">
       
-      <main className="w-full max-w-container-max mx-auto px-lg md:px-xl py-xl flex flex-col items-center z-10 relative flex-1">
-        <div className="text-center max-w-3xl mb-xl">
-          <h1 className="text-headline-lg-mobile md:text-display-lg font-headline-lg-mobile md:font-display-lg text-on-surface mb-md">
-            Fonctionnalités clés
-          </h1>
-          <p className="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">
-            Découvrez comment Boutika vous permet d'optimiser chaque aspect de votre activité grâce à des outils pensés pour les commerçants exigeants.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-lg w-full max-w-4xl">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-lg flex flex-col items-start gap-md hover:border-primary/50 transition-colors shadow-[0_4px_20px_rgb(0,0,0,0.03)] relative overflow-hidden group">
-              <div className="w-12 h-12 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center mb-xs group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-[24px]" style={{fontVariationSettings: "'FILL' 1"}}>{feature.icon}</span>
-              </div>
-              <h3 className="text-title-lg font-title-lg text-on-surface">{feature.title}</h3>
-              <p className="text-body-md font-body-md text-on-surface-variant leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-2xl mb-xl">
-          <Link to="/login" className="bg-primary text-on-primary hover:bg-surface-tint transition-colors rounded px-xl py-md text-label-lg font-label-lg flex items-center justify-center gap-sm shadow-md">
+      {/* 1. HERO SECTION (En-tête) */}
+      <section className="max-w-5xl mx-auto px-6 pt-24 pb-20 text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
+          Boutika aide les boutiques indépendantes à gérer leurs ventes.
+        </h1>
+        <p className="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto mb-10 leading-relaxed">
+          Gérez votre stock, vos factures et vos points de vente de tout secteur, sans aucune compétence informatique complexe.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link 
+            to="/register" 
+            className="px-8 py-4 text-base font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800 transition-colors shadow-sm"
+          >
             Commencer maintenant
-            <span className="material-symbols-outlined">arrow_forward</span>
+          </Link>
+          <Link 
+            to="/pricing" 
+            className="px-8 py-4 text-base font-medium text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
+          >
+            Voir les tarifs
           </Link>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* 2. SECTION PRINCIPALE (Zig-Zag Layout pour les 2 piliers majeurs) */}
+      <section className="max-w-7xl mx-auto px-6 py-16">
+        
+        {/* Pilier 1 : Catalogue */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 mb-24">
+          <div className="lg:w-1/2">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-700 rounded-lg mb-6">
+              <Layers className="w-6 h-6" />
+            </div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Catalogue produit flexible</h2>
+            <p className="text-lg text-slate-600 leading-relaxed mb-6">
+              Un seul outil qui s'adapte à n'importe quel type de commerce (mode, épicerie, quincaillerie...) grâce à des champs personnalisables, sans reconfiguration lourde.
+            </p>
+            <ul className="space-y-3 text-slate-600">
+              <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Adaptabilité totale</li>
+              <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Création de produits en 1 clic</li>
+            </ul>
+          </div>
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner">
+            {/* Placeholder Visuel */}
+            <span className="text-slate-400 font-medium">[Visuel : Interface du catalogue produit]</span>
+          </div>
+        </div>
+
+        {/* Pilier 2 : Multi-boutiques */}
+        <div className="flex flex-col lg:flex-row-reverse items-center gap-12 mb-16">
+          <div className="lg:w-1/2">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-700 rounded-lg mb-6">
+              <Store className="w-6 h-6" />
+            </div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Multi-boutiques natif</h2>
+            <p className="text-lg text-slate-600 leading-relaxed mb-6">
+              Gérez plusieurs points de vente depuis un seul compte, dès le tier de base. Le personnel n'a accès qu'à la boutique qui lui est assignée.
+            </p>
+            <ul className="space-y-3 text-slate-600">
+              <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Vues consolidées</li>
+              <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Sécurité des accès employés</li>
+            </ul>
+          </div>
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner">
+             {/* Placeholder Visuel */}
+             <span className="text-slate-400 font-medium">[Visuel : Dashboard avec carte multi-boutiques]</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. BENTO GRID (Grille moderne pour les 4 autres fonctionnalités) */}
+      <section className="bg-slate-50 py-24 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900">Tout ce dont vous avez besoin pour opérer</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            
+            {/* Carte Mobile Money */}
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <Smartphone className="w-8 h-8 text-blue-600 mb-6" />
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Paiement Mobile Money natif</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Abonnement payable en mobile money, avec activation manuelle en espèces pour les commerçants sans accès en ligne — pas de carte bancaire requise.
+              </p>
+            </div>
+
+            {/* Carte Inventaire */}
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <Box className="w-8 h-8 text-blue-600 mb-6" />
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Suivi de stock en temps réel</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Alertes de stock bas par boutique. Mise à jour automatique de l'inventaire à chaque transaction pour éviter les ruptures.
+              </p>
+            </div>
+
+            {/* Carte Facturation */}
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <FileText className="w-8 h-8 text-blue-600 mb-6" />
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Facturation automatique</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Une facture au format PDF est générée à chaque vente clôturée, prête à être exportée, imprimée ou partagée.
+              </p>
+            </div>
+
+            {/* Carte Rapports */}
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <BarChart3 className="w-8 h-8 text-blue-600 mb-6" />
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Rapports de ventes</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Vue complète de vos performances (jour/semaine/mois), par boutique et de manière consolidée, sans aucun jargon comptable.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 4. BOTTOM CTA (Appel à l'action final) */}
+      <section className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <h2 className="text-3xl font-bold text-slate-900 mb-6">
+          Prêt à moderniser votre gestion ?
+        </h2>
+        <p className="text-lg text-slate-500 mb-10">
+          Rejoignez les milliers de commerçants qui pilotent leur activité en toute simplicité.
+        </p>
+        <Link 
+          to="/register" 
+          className="inline-flex items-center justify-center px-10 py-4 text-base font-medium text-white bg-slate-900 rounded-md hover:bg-slate-800 transition-colors shadow-lg"
+        >
+          Créer mon compte Boutika
+        </Link>
+      </section>
+
+    </main>
   );
 };
