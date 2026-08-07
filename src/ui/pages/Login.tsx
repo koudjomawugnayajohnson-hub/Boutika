@@ -5,12 +5,13 @@ import { t } from '../i18n';
 import { z } from 'zod';
 
 const loginSchema = z.object({
-  phone: z.string().regex(/^\+[1-9]\d{6,14}$/, "Numéro de téléphone invalide (format international requis, ex: +228...)"),
+  phone: z.string().regex(/^[0-9]{8,10}$/, "Le numéro de téléphone doit contenir entre 8 et 10 chiffres"),
   pin: z.string().regex(/^[0-9]{6}$/, "Le code PIN doit contenir exactement 6 chiffres"),
 });
 
 export const Login: React.FC = () => {
   const [formData, setFormData] = useState({ phone: '', pin: '' });
+  const [countryCode, setCountryCode] = useState('+228');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { signInWithPhone, isAuthenticated, isAdminAuthenticated } = useAuth();
@@ -31,7 +32,8 @@ export const Login: React.FC = () => {
 
     try {
       const validatedData = loginSchema.parse(formData);
-      await signInWithPhone(validatedData.phone, validatedData.pin);
+      const fullPhone = `${countryCode}${validatedData.phone.replace(/^0+/, '')}`;
+      await signInWithPhone(fullPhone, validatedData.pin);
       // Redirection automatique gérée par useEffect
     } catch (err: any) {
       if (err && err.errors && Array.isArray(err.errors)) {
@@ -51,6 +53,17 @@ export const Login: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
+
+  const countryCodes = [
+    { code: '+228', label: '🇹🇬 Togo (+228)' },
+    { code: '+229', label: '🇧🇯 Bénin (+229)' },
+    { code: '+225', label: '🇨🇮 Côte d\'Ivoire (+225)' },
+    { code: '+226', label: '🇧🇫 Burkina Faso (+226)' },
+    { code: '+227', label: '🇳🇪 Niger (+227)' },
+    { code: '+224', label: '🇬🇳 Guinée (+224)' },
+    { code: '+221', label: '🇸🇳 Sénégal (+221)' },
+    { code: '+223', label: '🇲🇱 Mali (+223)' },
+  ];
 
   return (
     <div className="bg-surface text-on-surface h-screen flex flex-col items-center justify-center font-body-md">
@@ -72,19 +85,31 @@ export const Login: React.FC = () => {
           <form onSubmit={handleLogin} className="flex flex-col gap-sm">
             <div className="flex flex-col gap-base">
               <label className="text-label-md font-label-md text-on-surface-variant uppercase" htmlFor="phone">Numéro de téléphone</label>
-              <div className="relative flex flex-col">
+              <div className={`flex bg-surface-container-lowest border rounded-lg focus-within:ring-1 focus-within:ring-primary focus-within:border-transparent overflow-hidden transition-all ${errors.phone ? 'border-error focus-within:ring-error' : 'border-outline-variant'}`}>
+                <div className="flex-shrink-0 flex items-center bg-slate-50 border-r border-outline-variant">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="h-full px-2 py-3 bg-transparent text-sm text-on-surface font-medium focus:outline-none cursor-pointer appearance-none"
+                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%2364748b\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.2rem center', paddingRight: '1.5rem' }}
+                  >
+                    {countryCodes.map(c => (
+                      <option key={c.code} value={c.code}>{c.label}</option>
+                    ))}
+                  </select>
+                </div>
                 <input 
-                  className={`w-full h-12 px-sm rounded-lg border bg-surface-container-lowest text-body-lg font-body-lg text-on-surface placeholder:text-outline focus:ring-1 focus:outline-none transition-all ${errors.phone ? 'border-error focus:border-error focus:ring-error' : 'border-outline-variant focus:border-primary focus:ring-primary'}`}
+                  className="w-full h-12 px-sm bg-transparent text-body-lg font-body-lg text-on-surface placeholder:text-outline focus:outline-none"
                   id="phone" 
                   type="tel" 
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+228..."
+                  placeholder="Numéro local"
                   data-testid="login-phone"
                   required 
                 />
-                {errors.phone && <p className="mt-1 text-xs text-error">{errors.phone}</p>}
               </div>
+              {errors.phone && <p className="mt-1 text-xs text-error">{errors.phone}</p>}
             </div>
 
             <div className="flex flex-col gap-base mt-2">

@@ -6,7 +6,7 @@ import { Store, Settings, PieChart, Users, Package, HeartHandshake, Eye, EyeOff 
 
 const registerSchema = z.object({
   name: z.string().min(2, "Le nom de l'entreprise doit contenir au moins 2 caractères"),
-  phone: z.string().regex(/^\+?[0-9]{6,15}$/, "Numéro de téléphone invalide"),
+  phone: z.string().regex(/^[0-9]{8,10}$/, "Le numéro de téléphone doit contenir entre 8 et 10 chiffres"),
   pin: z.string().regex(/^[0-9]{6}$/, "Le mot de passe (PIN) doit contenir exactement 6 chiffres"),
   confirmPin: z.string()
 }).refine((data) => data.pin === data.confirmPin, {
@@ -31,15 +31,12 @@ export const Register: React.FC = () => {
     setErrors({});
 
     try {
-      // Combine country code and phone number for validation and submission
-      const fullPhone = formData.phone.startsWith('+') ? formData.phone : `${countryCode}${formData.phone.replace(/^0+/, '')}`;
-      const dataToValidate = { ...formData, phone: fullPhone };
-      
-      const validatedData = registerSchema.parse(dataToValidate);
+      const validatedData = registerSchema.parse(formData);
+      const fullPhone = `${countryCode}${validatedData.phone.replace(/^0+/, '')}`;
       localStorage.setItem('boutika_pending_org_name', validatedData.name);
       
       // The current backend system uses Phone and PIN
-      await signUpWithPhone(validatedData.phone, validatedData.pin);
+      await signUpWithPhone(fullPhone, validatedData.pin);
       
       navigate('/app');
     } catch (err: any) {
@@ -62,14 +59,14 @@ export const Register: React.FC = () => {
   };
 
   const countryCodes = [
-    { code: '+228', label: 'TG +228' },
-    { code: '+229', label: 'BJ +229' },
-    { code: '+225', label: 'CI +225' },
-    { code: '+226', label: 'BF +226' },
-    { code: '+227', label: 'NE +227' },
-    { code: '+224', label: 'GN +224' },
-    { code: '+221', label: 'SN +221' },
-    { code: '+223', label: 'ML +223' },
+    { code: '+228', label: '🇹🇬 Togo (+228)' },
+    { code: '+229', label: '🇧🇯 Bénin (+229)' },
+    { code: '+225', label: '🇨🇮 Côte d\'Ivoire (+225)' },
+    { code: '+226', label: '🇧🇫 Burkina Faso (+226)' },
+    { code: '+227', label: '🇳🇪 Niger (+227)' },
+    { code: '+224', label: '🇬🇳 Guinée (+224)' },
+    { code: '+221', label: '🇸🇳 Sénégal (+221)' },
+    { code: '+223', label: '🇲🇱 Mali (+223)' },
   ];
 
   return (
