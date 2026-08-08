@@ -49,6 +49,8 @@ export interface ShopRepository {
   findById(organizationId: string, id: string): Promise<Shop | null>;
   findAllByOrganization(organizationId: string): Promise<Shop[]>;
   create(shop: Omit<Shop, 'id' | 'createdAt'>): Promise<Shop>;
+  update(organizationId: string, id: string, updates: Partial<Shop>): Promise<Shop>;
+  delete(organizationId: string, id: string): Promise<void>;
 }
 
 export interface OrganizationMemberRepository {
@@ -61,6 +63,7 @@ export interface ShopStaffRepository {
   findByUserId(userId: string): Promise<ShopStaff[]>;
   findByShop(organizationId: string, shopId: string): Promise<ShopStaff[]>;
   create(staff: Omit<ShopStaff, 'id'>): Promise<ShopStaff>;
+  delete(id: string): Promise<void>;
 }
 
 export interface AuditLogRepository {

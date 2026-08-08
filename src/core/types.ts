@@ -25,6 +25,7 @@ export interface Shop {
   address?: string;
   phone?: string;
   logoUrl?: string;
+  status?: 'active' | 'inactive';
   createdAt: string;
 }
 

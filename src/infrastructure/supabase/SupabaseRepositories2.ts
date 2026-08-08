@@ -91,6 +91,11 @@ export class SupabaseShopStaffRepository implements ShopStaffRepository {
       userId: data.user_id
     };
   }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase.from('shop_staff').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+  }
 }
 
 export class SupabaseAuditLogRepository implements AuditLogRepository {

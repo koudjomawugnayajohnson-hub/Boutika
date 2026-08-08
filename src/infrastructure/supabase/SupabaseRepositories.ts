@@ -212,6 +212,7 @@ export class SupabaseShopRepository implements ShopRepository {
       organizationId: data.organization_id,
       name: data.name,
       address: data.address,
+      status: data.status,
       createdAt: data.created_at
     };
   }
@@ -224,6 +225,7 @@ export class SupabaseShopRepository implements ShopRepository {
       organizationId: d.organization_id,
       name: d.name,
       address: d.address,
+      status: d.status,
       createdAt: d.created_at
     }));
   }
@@ -232,7 +234,8 @@ export class SupabaseShopRepository implements ShopRepository {
     const { data, error } = await supabase.from('shops').insert({
       organization_id: shop.organizationId,
       name: shop.name,
-      address: shop.address
+      address: shop.address,
+      status: shop.status || 'active'
     }).select().single();
     if (error) throw new Error(error.message);
     return {
@@ -240,8 +243,32 @@ export class SupabaseShopRepository implements ShopRepository {
       organizationId: data.organization_id,
       name: data.name,
       address: data.address,
+      status: data.status,
       createdAt: data.created_at
     };
+  }
+
+  async update(organizationId: string, id: string, updates: Partial<Shop>): Promise<Shop> {
+    const updateData: any = {};
+    if (updates.name !== undefined) updateData.name = updates.name;
+    if (updates.address !== undefined) updateData.address = updates.address;
+    if (updates.status !== undefined) updateData.status = updates.status;
+
+    const { data, error } = await supabase.from('shops').update(updateData).eq('id', id).eq('organization_id', organizationId).select().single();
+    if (error) throw new Error(error.message);
+    return {
+      id: data.id,
+      organizationId: data.organization_id,
+      name: data.name,
+      address: data.address,
+      status: data.status,
+      createdAt: data.created_at
+    };
+  }
+
+  async delete(organizationId: string, id: string): Promise<void> {
+    const { error } = await supabase.from('shops').delete().eq('id', id).eq('organization_id', organizationId);
+    if (error) throw new Error(error.message);
   }
 }
 

@@ -116,6 +116,18 @@ export class MockShopRepository implements ShopRepository {
 
     return newShop;
   }
+  async update(organizationId: string, id: string, updates: Partial<Shop>): Promise<Shop> {
+    const idx = mockDb.shops.findIndex(s => s.id === id && s.organizationId === organizationId);
+    if (idx === -1) throw new Error('Shop not found');
+    mockDb.shops[idx] = { ...mockDb.shops[idx], ...updates };
+    return mockDb.shops[idx];
+  }
+  async delete(organizationId: string, id: string): Promise<void> {
+    const idx = mockDb.shops.findIndex(s => s.id === id && s.organizationId === organizationId);
+    if (idx !== -1) {
+      mockDb.shops.splice(idx, 1);
+    }
+  }
 }
 
 export class MockOrganizationMemberRepository implements OrganizationMemberRepository {
@@ -146,6 +158,12 @@ export class MockShopStaffRepository implements ShopStaffRepository {
     const newStaff: ShopStaff = { ...staff, id: generateId() };
     mockDb.shopStaff.push(newStaff);
     return newStaff;
+  }
+  async delete(id: string): Promise<void> {
+    const idx = mockDb.shopStaff.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      mockDb.shopStaff.splice(idx, 1);
+    }
   }
 }
 
