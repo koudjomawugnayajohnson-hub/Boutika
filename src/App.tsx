@@ -18,6 +18,7 @@ import { PlatformAdminGuard } from './ui/components/PlatformAdminGuard';
 import { Team } from './ui/pages/Team';
 import { Compliance } from './ui/pages/Compliance';
 import { Shops } from './ui/pages/Shops';
+import { ShopDashboard } from './ui/pages/ShopDashboard';
 
 const SaleDetailRoute = () => {
   const { id } = useParams();
@@ -42,6 +43,7 @@ function App() {
             <Route path="pos" element={<POS />} />
             <Route path="sale/:id" element={<SaleDetailRoute />} />
             <Route path="shops" element={<Shops />} />
+            <Route path="shops/:shopId" element={<ShopDashboard />} />
             <Route path="subscription" element={<Subscription />} />
             <Route path="team" element={<Team />} />
             <Route path="compliance" element={<Compliance />} />

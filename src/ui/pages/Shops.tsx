@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../../infrastructure/supabase/client';
 import { Plus, Settings, Store, MapPin, X } from 'lucide-react';
@@ -149,10 +150,10 @@ export const Shops: React.FC = () => {
                 </div>
               </div>
               <div className="mt-6 pt-4 border-t border-slate-100">
-                <button className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium transition-colors">
+                <Link to={`/app/shops/${shop.id}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium transition-colors">
                   <Settings className="w-4 h-4" />
                   Gérer
-                </button>
+                </Link>
               </div>
             </div>
           ))}
