@@ -7,13 +7,19 @@ import { mockDb } from '../../infrastructure/mock/MockDatabase';
 import { OnboardingWizard } from '../components/OnboardingWizard';
 
 export const Dashboard: React.FC = () => {
-  const { user, currentOrganization, currentShop, selectOrganization, selectShop, role, logout } = useAuth();
+  const { user, currentOrganization, currentShop, selectOrganization, selectShop, role, logout, signInWithPhone } = useAuth();
   const [myOrgs, setMyOrgs] = useState<Organization[]>([]);
   const [myShops, setMyShops] = useState<Shop[]>([]);
   const [revenue, setRevenue] = useState(0);
   const [transactions, setTransactions] = useState(0);
   const [consolidatedRevenue, setConsolidatedRevenue] = useState(0);
   const [consolidatedTransactions, setConsolidatedTransactions] = useState(0);
+
+  // Shop Lock Screen states
+  const [shopToUnlock, setShopToUnlock] = useState<string | null>(null);
+  const [unlockPin, setUnlockPin] = useState('');
+  const [unlockError, setUnlockError] = useState('');
+  const [unlockLoading, setUnlockLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -48,24 +54,25 @@ export const Dashboard: React.FC = () => {
     }
   }, [myOrgs, currentOrganization, selectOrganization]);
 
-  useEffect(() => {
-    const loadShops = async () => {
-      if (!currentOrganization || !user) return;
-      const repos = getRepositories();
-      
-      if (role === 'owner' || role === 'admin') {
-        const shops = await repos.shops.findAllByOrganization(currentOrganization.id);
-        setMyShops(shops);
-      } else {
-        const staff = await repos.shopStaff.findByUserId(user.id);
-        const loadedShops = [];
-        for (const st of staff) {
-          const s = await repos.shops.findById(currentOrganization.id, st.shopId);
-          if (s) loadedShops.push(s);
-        }
-        setMyShops(loadedShops);
+  const loadShops = async () => {
+    if (!currentOrganization || !user) return;
+    const repos = getRepositories();
+    
+    if (role === 'owner' || role === 'admin') {
+      const shops = await repos.shops.findAllByOrganization(currentOrganization.id);
+      setMyShops(shops);
+    } else {
+      const staff = await repos.shopStaff.findByUserId(user.id);
+      const loadedShops = [];
+      for (const st of staff) {
+        const s = await repos.shops.findById(currentOrganization.id, st.shopId);
+        if (s) loadedShops.push(s);
       }
-    };
+      setMyShops(loadedShops);
+    }
+  };
+
+  useEffect(() => {
     loadShops();
   }, [currentOrganization, user, role]);
 
@@ -168,13 +175,108 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
         <div className="w-full mt-2 pb-24">
-          <OnboardingWizard onComplete={() => {}} initialStep="shop" />
+          <OnboardingWizard onComplete={loadShops} initialStep="shop" />
         </div>
       </div>
     );
   }
 
   const isConsolidated = sessionStorage.getItem('boutika_consolidated_view') === 'true';
+
+  if (shopToUnlock !== null) {
+    const handleUnlock = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!user?.phone) {
+        setUnlockError("Erreur : Impossible de vérifier le PIN (aucun numéro associé).");
+        return;
+      }
+      setUnlockLoading(true);
+      setUnlockError('');
+      try {
+        await signInWithPhone(user.phone, unlockPin);
+        if (shopToUnlock === 'consolidated') {
+          sessionStorage.setItem('boutika_consolidated_view', 'true');
+          await selectShop('');
+        } else {
+          sessionStorage.removeItem('boutika_consolidated_view');
+          await selectShop(shopToUnlock);
+        }
+        setShopToUnlock(null);
+        setUnlockPin('');
+      } catch (err) {
+        setUnlockError("Code PIN incorrect.");
+      } finally {
+        setUnlockLoading(false);
+      }
+    };
+
+    return (
+      <div className="flex flex-col gap-lg mb-lg w-full max-w-md mx-auto animate-in fade-in zoom-in duration-300">
+        <div className="flex justify-between items-center w-full">
+          <button 
+            onClick={() => {
+              setShopToUnlock(null);
+              setUnlockPin('');
+              setUnlockError('');
+            }}
+            className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-medium"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+            Retour
+          </button>
+        </div>
+        
+        <div className="bg-surface-container-low p-xl rounded-2xl border border-outline-variant text-center shadow-sm mt-8">
+          <div className="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-[32px]">lock</span>
+          </div>
+          <h2 className="text-headline-sm font-bold text-on-surface mb-2">Sécurité</h2>
+          <p className="text-body-md text-on-surface-variant mb-6">
+            Veuillez entrer votre code PIN pour accéder à ce tableau de bord.
+          </p>
+          
+          <form onSubmit={handleUnlock} className="flex flex-col gap-4">
+            <div>
+              <input
+                type="password"
+                inputMode="numeric"
+                maxLength={4}
+                value={unlockPin}
+                onChange={e => {
+                  setUnlockPin(e.target.value);
+                  setUnlockError('');
+                }}
+                className="w-full text-center text-headline-lg tracking-[0.5em] font-mono px-4 py-3 bg-surface border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                placeholder="••••"
+                required
+              />
+              {unlockError && (
+                <p className="text-error text-sm mt-2 flex items-center justify-center gap-1 animate-in fade-in">
+                  <span className="material-symbols-outlined text-[16px]">error</span>
+                  {unlockError}
+                </p>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              disabled={unlockPin.length < 4 || unlockLoading}
+              className="w-full bg-primary text-on-primary py-3 rounded-full font-bold hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+            >
+              {unlockLoading ? (
+                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+              ) : (
+                <>
+                  Déverrouiller
+                  <span className="material-symbols-outlined text-[20px]">lock_open</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (myShops.length > 0 && !currentShop && !isConsolidated) {
     return (
@@ -196,8 +298,7 @@ export const Dashboard: React.FC = () => {
             <button 
               key={shop.id} 
               onClick={() => {
-                sessionStorage.removeItem('boutika_consolidated_view');
-                selectShop(shop.id);
+                setShopToUnlock(shop.id);
               }}
               className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:bg-surface-container-low transition-colors text-left flex flex-col gap-xs shadow-sm"
             >
@@ -207,9 +308,7 @@ export const Dashboard: React.FC = () => {
           ))}
           <button 
             onClick={() => {
-              sessionStorage.setItem('boutika_consolidated_view', 'true');
-              selectShop(''); 
-              // React will re-render and since isConsolidated is now true, it will show the dashboard
+              setShopToUnlock('consolidated');
             }}
             className="bg-primary-container/20 border border-primary/30 p-md rounded-xl hover:bg-primary-container/30 transition-colors text-left flex flex-col gap-xs shadow-sm"
           >
@@ -239,7 +338,13 @@ export const Dashboard: React.FC = () => {
           <select 
             className="w-full appearance-none border border-outline-variant bg-surface rounded-md py-2 pl-3 pr-10 text-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
             value={currentShop?.id || ''}
-            onChange={(e) => selectShop(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === '') {
+                setShopToUnlock('consolidated');
+              } else {
+                setShopToUnlock(e.target.value);
+              }
+            }}
           >
             <option value="">Toutes les boutiques (Consolidé)</option>
             {myShops.map(shop => (
