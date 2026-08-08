@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { z } from 'zod';
@@ -21,9 +21,17 @@ export const Register: React.FC = () => {
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
   const navigate = useNavigate();
-  const { signUpWithPhone } = useAuth();
+  const { signUpWithPhone, isAuthenticated, isAdminAuthenticated } = useAuth();
 
   const [countryCode, setCountryCode] = useState('+228');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app');
+    } else if (isAdminAuthenticated) {
+      navigate('/platform-admin');
+    }
+  }, [isAuthenticated, isAdminAuthenticated, navigate]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

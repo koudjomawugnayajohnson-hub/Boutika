@@ -190,7 +190,7 @@ export class MockAuthRepository implements AuthRepository {
     return { id: 'mock-user-id', phone: '+33612345678' };
   }
 
-  onAuthStateChange(callback: (userId: string | null) => void): () => void {
+  onAuthStateChange(callback: (event: string, userId: string | null) => void): () => void {
     return () => {};
   }
 }

@@ -66,9 +66,9 @@ export class SupabaseAuthRepository implements AuthRepository {
     return session?.user ? { id: session.user.id, email: session.user.email, phone: session.user.phone } : null;
   }
 
-  onAuthStateChange(callback: (userId: string | null) => void): () => void {
+  onAuthStateChange(callback: (event: string, userId: string | null) => void): () => void {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      callback(session?.user?.id || null);
+      callback(event, session?.user?.id || null);
     });
     return () => subscription.unsubscribe();
   }

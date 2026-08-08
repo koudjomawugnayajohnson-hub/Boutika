@@ -103,7 +103,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    const unsubscribe = repos.auth.onAuthStateChange(async (userId) => {
+    const unsubscribe = repos.auth.onAuthStateChange(async (event, userId) => {
+      if (event === 'SIGNED_OUT') {
+        logout();
+        return;
+      }
+
+      if (event !== 'INITIAL_SESSION' && event !== 'SIGNED_IN') {
+        return;
+      }
+
       if (userId) {
         try {
           const authUser = await repos.auth.getCurrentUser();
@@ -213,6 +222,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    repos.auth.logout();
     localStorage.removeItem('boutika_user_id');
     localStorage.removeItem('boutika_org_id');
     localStorage.removeItem('boutika_shop_id');
@@ -228,6 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       adminUser: null,
       isAdminAuthenticated: false,
     });
+    window.location.href = '/';
   };
 
   const selectOrganization = async (orgId: string) => {

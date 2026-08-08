@@ -27,7 +27,7 @@ export interface AuthRepository {
   signInAdminWithEmail(email: string, pin: string): Promise<{ id: string } | null>;
   logout(): Promise<void>;
   getCurrentUser(): Promise<{ id: string, email?: string, phone?: string } | null>;
-  onAuthStateChange(callback: (userId: string | null) => void): () => void;
+  onAuthStateChange(callback: (event: string, userId: string | null) => void): () => void;
 }
 
 export interface UserRepository {
