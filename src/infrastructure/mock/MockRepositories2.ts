@@ -21,6 +21,9 @@ export class MockInvitationRepository implements InvitationRepository {
   async findAllByOrganization(organizationId: string): Promise<Invitation[]> {
     return mockDb.invitations.filter(i => i.organizationId === organizationId);
   }
+  async findByPhone(phone: string): Promise<Invitation[]> {
+    return mockDb.invitations.filter(i => i.phone === phone);
+  }
   async create(invitation: Omit<Invitation, 'id' | 'createdAt'>): Promise<Invitation> {
     const newInv: Invitation = { ...invitation, id: generateId(), createdAt: generateDate() };
     mockDb.invitations.push(newInv);

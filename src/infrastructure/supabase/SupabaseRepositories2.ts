@@ -187,6 +187,21 @@ export class SupabaseInvitationRepository implements InvitationRepository {
     }));
   }
 
+  async findByPhone(phone: string): Promise<Invitation[]> {
+    const { data, error } = await supabase.from('invitations').select('*').eq('phone', phone);
+    if (error) throw new Error(error.message);
+    return data.map(d => ({
+      id: d.id,
+      organizationId: d.organization_id,
+      inviterId: d.inviter_id,
+      name: d.name,
+      phone: d.phone,
+      role: d.role,
+      status: d.status,
+      createdAt: d.created_at
+    }));
+  }
+
   async create(invitation: Omit<Invitation, 'id' | 'createdAt'>): Promise<Invitation> {
     const { data, error } = await supabase.from('invitations').insert({
       organization_id: invitation.organizationId,

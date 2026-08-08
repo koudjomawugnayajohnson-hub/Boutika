@@ -75,6 +75,7 @@ export interface AuditLogRepository {
 export interface InvitationRepository {
   findById(organizationId: string, id: string): Promise<Invitation | null>;
   findAllByOrganization(organizationId: string): Promise<Invitation[]>;
+  findByPhone(phone: string): Promise<Invitation[]>;
   create(invitation: Omit<Invitation, 'id' | 'createdAt'>): Promise<Invitation>;
   updateStatus(organizationId: string, id: string, status: Invitation['status']): Promise<Invitation>;
 }

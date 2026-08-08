@@ -89,24 +89,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error("Failed to create org", err);
       }
     } else {
-      // Login flow: Fetch organizations for user
-      if (email === 'zetsufried@gmail.com') {
-        const mockOrg1 = await repos.organizations.findById('org1');
-        if (mockOrg1) {
-          orgToSelect = mockOrg1;
-          roleToSet = 'owner';
-          const shops = await repos.shops.findAllByOrganization('org1');
-          if (shops.length > 0) shopToSelect = shops[0];
+      let handledByInvitation = false;
+      if (user.phone) {
+        try {
+          const invitations = await repos.invitations.findByPhone(user.phone);
+          const pendingInvite = invitations.find(i => i.status === 'pending');
+          if (pendingInvite) {
+            await repos.organizationMembers.create({
+              organizationId: pendingInvite.organizationId,
+              userId: user.id,
+              role: pendingInvite.role as Role
+            });
+            await repos.invitations.updateStatus(pendingInvite.organizationId, pendingInvite.id, 'accepted');
+            
+            const firstOrg = await repos.organizations.findById(pendingInvite.organizationId);
+            if (firstOrg) {
+              orgToSelect = firstOrg;
+              roleToSet = pendingInvite.role as Role;
+              const shops = await repos.shops.findAllByOrganization(firstOrg.id);
+              if (shops.length > 0) shopToSelect = shops[0];
+            }
+            handledByInvitation = true;
+          }
+        } catch (err) {
+          console.error("Failed to process invitation", err);
         }
-      } else {
-        const members = await repos.organizationMembers.findByUserId(user.id);
-        if (members.length > 0) {
-          const firstOrg = await repos.organizations.findById(members[0].organizationId);
-          if (firstOrg) {
-            orgToSelect = firstOrg;
-            roleToSet = members[0].role;
-            const shops = await repos.shops.findAllByOrganization(firstOrg.id);
+      }
+
+      if (!handledByInvitation) {
+        // Login flow: Fetch organizations for user
+        if (email === 'zetsufried@gmail.com') {
+          const mockOrg1 = await repos.organizations.findById('org1');
+          if (mockOrg1) {
+            orgToSelect = mockOrg1;
+            roleToSet = 'owner';
+            const shops = await repos.shops.findAllByOrganization('org1');
             if (shops.length > 0) shopToSelect = shops[0];
+          }
+        } else {
+          const members = await repos.organizationMembers.findByUserId(user.id);
+          if (members.length > 0) {
+            const firstOrg = await repos.organizations.findById(members[0].organizationId);
+            if (firstOrg) {
+              orgToSelect = firstOrg;
+              roleToSet = members[0].role;
+              const shops = await repos.shops.findAllByOrganization(firstOrg.id);
+              if (shops.length > 0) shopToSelect = shops[0];
+            }
           }
         }
       }
