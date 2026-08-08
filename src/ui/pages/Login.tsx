@@ -16,14 +16,17 @@ export const Login: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { signInWithPhone, isAuthenticated, isAdminAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (isAdminAuthenticated) {
-      navigate('/platform-admin');
-    } else if (isAuthenticated) {
-      navigate('/app');
+    if (justLoggedIn) {
+      if (isAdminAuthenticated) {
+        navigate('/platform-admin');
+      } else if (isAuthenticated) {
+        navigate('/app');
+      }
     }
-  }, [isAuthenticated, isAdminAuthenticated, navigate]);
+  }, [isAuthenticated, isAdminAuthenticated, navigate, justLoggedIn]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +37,9 @@ export const Login: React.FC = () => {
       const validatedData = loginSchema.parse(formData);
       const fullPhone = `${countryCode}${validatedData.phone.replace(/^0+/, '')}`;
       await signInWithPhone(fullPhone, validatedData.pin);
-      // Redirection automatique gérée par useEffect
+      setJustLoggedIn(true);
     } catch (err: any) {
-      if (err && err.errors && Array.isArray(err.errors)) {
+      if (err.errors && Array.isArray(err.errors)) {
         const newErrors: Record<string, string> = {};
         err.errors.forEach((e: any) => {
           if (e.path && e.path[0]) newErrors[e.path[0].toString()] = e.message;

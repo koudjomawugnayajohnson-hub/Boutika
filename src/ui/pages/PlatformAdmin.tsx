@@ -69,13 +69,13 @@ export const PlatformAdmin: React.FC = () => {
           </div>
           <div className="flex items-center gap-sm">
             <span className="font-label-md text-on-surface-variant mr-4">{user?.phone} (Admin)</span>
-            <div 
-              className="w-8 h-8 rounded bg-primary-container text-on-primary flex items-center justify-center cursor-pointer"
-              title={t('layout.logout')}
-              onClick={logout}
+            <button 
+              onClick={logout} 
+              className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
             >
-              <span className="material-symbols-outlined text-[16px]">logout</span>
-            </div>
+              <span className="material-symbols-outlined">logout</span>
+              Déconnexion
+            </button>
           </div>
         </div>
       </header>

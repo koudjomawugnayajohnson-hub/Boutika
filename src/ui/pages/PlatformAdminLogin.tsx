@@ -16,11 +16,13 @@ export const PlatformAdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const { signInAdminWithEmail, isAdminAuthenticated } = useAuth();
 
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
+
   useEffect(() => {
-    if (isAdminAuthenticated) {
+    if (justLoggedIn && isAdminAuthenticated) {
       navigate('/platform-admin');
     }
-  }, [isAdminAuthenticated, navigate]);
+  }, [isAdminAuthenticated, navigate, justLoggedIn]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +34,8 @@ export const PlatformAdminLogin: React.FC = () => {
       const success = await signInAdminWithEmail(validatedData.email, validatedData.pin);
       if (!success) {
         setError('Identifiants incorrects.');
+      } else {
+        setJustLoggedIn(true);
       }
     } catch (err: any) {
       if (err && err.errors && Array.isArray(err.errors)) {
