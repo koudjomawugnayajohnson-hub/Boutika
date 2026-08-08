@@ -1,7 +1,148 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Store, Smartphone, BarChart3, FileText, Layers, CheckCircle } from 'lucide-react';
+import { Box, Store, Smartphone, BarChart3, FileText, Layers, CheckCircle, Search, Filter, ShieldCheck, Package, ArrowRightLeft } from 'lucide-react';
 import { TestimonialMarquee } from '../components/TestimonialMarquee';
+
+const CatalogPreviewUI = () => (
+  <div className="w-full h-full bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col font-sans">
+    {/* Header / Search & Filter */}
+    <div className="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+      <div className="flex-1 flex items-center bg-white border border-slate-200 rounded-md px-3 py-2 mr-3 shadow-sm">
+        <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+        <span className="text-slate-400 text-sm truncate">Rechercher...</span>
+      </div>
+      <div className="p-2 bg-white border border-slate-200 rounded-md shadow-sm shrink-0">
+        <Filter className="w-4 h-4 text-slate-600" />
+      </div>
+    </div>
+    
+    {/* Categories (Badges) */}
+    <div className="px-4 py-3 border-b border-slate-100 flex gap-2 overflow-x-auto shrink-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full whitespace-nowrap">Épicerie</span>
+      <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-full whitespace-nowrap">Mode</span>
+      <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-full whitespace-nowrap">Quincaillerie</span>
+    </div>
+
+    {/* Product List */}
+    <div className="flex-1 p-3 sm:p-4 flex flex-col gap-3 overflow-y-auto">
+      {/* Item 1 */}
+      <div className="flex justify-between items-center p-3 border border-slate-100 rounded-lg hover:border-slate-200 transition-colors">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-orange-100 rounded flex items-center justify-center text-orange-600 shrink-0">
+            <Package className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-bold text-slate-800 truncate">Riz 50kg</div>
+            <div className="text-xs text-slate-500 truncate">Champ perso : Date exp.</div>
+          </div>
+        </div>
+        <div className="text-right shrink-0 ml-2">
+          <div className="text-sm font-semibold text-slate-800 whitespace-nowrap">18 000 F</div>
+          <div className="text-xs font-medium text-emerald-600 whitespace-nowrap">Stock : 140</div>
+        </div>
+      </div>
+
+      {/* Item 2 */}
+      <div className="flex justify-between items-center p-3 border border-slate-100 rounded-lg hover:border-slate-200 transition-colors">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-pink-100 rounded flex items-center justify-center text-pink-600 shrink-0">
+            <Layers className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-bold text-slate-800 truncate">Pagne Wax</div>
+            <div className="text-xs text-slate-500 truncate">Champ perso : Motif</div>
+          </div>
+        </div>
+        <div className="text-right shrink-0 ml-2">
+          <div className="text-sm font-semibold text-slate-800 whitespace-nowrap">6 500 F</div>
+          <div className="text-xs font-medium text-blue-600 whitespace-nowrap">Variantes : 12</div>
+        </div>
+      </div>
+
+      {/* Item 3 */}
+      <div className="flex justify-between items-center p-3 border border-slate-100 rounded-lg hover:border-slate-200 transition-colors">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-slate-600 shrink-0">
+            <Box className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-bold text-slate-800 truncate">Ciment 50kg</div>
+            <div className="text-xs text-slate-500 truncate">Champ perso : Fournis.</div>
+          </div>
+        </div>
+        <div className="text-right shrink-0 ml-2">
+          <div className="text-sm font-semibold text-slate-800 whitespace-nowrap">4 500 F</div>
+          <div className="text-xs font-medium text-amber-600 whitespace-nowrap">Prix de gros</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const MultiStorePreviewUI = () => (
+  <div className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col font-sans p-3 sm:p-4 gap-3 sm:gap-4 relative">
+    {/* Store Selector */}
+    <div className="bg-white border border-slate-200 p-3 rounded-lg flex items-center justify-between shadow-sm shrink-0">
+      <div className="flex items-center gap-2 min-w-0">
+        <Store className="w-5 h-5 text-blue-600 shrink-0" />
+        <span className="text-sm font-bold text-slate-800 truncate">Boutique Principale</span>
+      </div>
+      <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md shrink-0 ml-2">Ouverte</span>
+    </div>
+
+    <div className="grid grid-cols-2 gap-3 shrink-0">
+      <div className="bg-white border border-slate-200 p-3 rounded-lg flex flex-col gap-1 shadow-sm">
+        <span className="text-xs text-slate-500 font-medium truncate">Ventes (Auj.)</span>
+        <span className="text-lg font-bold text-slate-800">124</span>
+      </div>
+      <div className="bg-white border border-slate-200 p-3 rounded-lg flex flex-col gap-1 shadow-sm">
+        <span className="text-xs text-slate-500 font-medium truncate">Stock total</span>
+        <span className="text-lg font-bold text-slate-800">3,450</span>
+      </div>
+    </div>
+
+    {/* Secondary Store (Warehouse) */}
+    <div className="bg-white border border-slate-200 p-3 rounded-lg shadow-sm relative overflow-hidden mt-1 shrink-0">
+      <div className="absolute top-0 right-0 w-16 h-16 bg-slate-100 rounded-bl-full -mr-8 -mt-8 z-0"></div>
+      <div className="relative z-10 flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <Package className="w-4 h-4 text-slate-500 shrink-0" />
+            <span className="text-sm font-bold text-slate-800 truncate">Dépôt Central</span>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 bg-rose-100 text-rose-700 rounded uppercase shrink-0 ml-2">Staff Restreint</span>
+        </div>
+        <div className="flex items-center gap-2 mt-1">
+          <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+          <span className="text-xs text-slate-500 truncate">Accès Limité</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Transfer Alert */}
+    <div className="mt-auto bg-blue-50 border border-blue-100 p-3 rounded-lg flex items-start gap-3 shrink-0">
+      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+        <ArrowRightLeft className="w-4 h-4" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-sm font-bold text-slate-800 truncate">Transfert en cours</div>
+        <div className="text-xs text-slate-600 mt-1 line-clamp-2">50x Ciment expédiés vers Boutique Principale.</div>
+      </div>
+    </div>
+
+    {/* Role Indicators */}
+    <div className="flex gap-2 shrink-0">
+      <div className="flex-1 flex justify-center items-center gap-1.5 py-1.5 border border-emerald-200 bg-emerald-50 rounded-md">
+        <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
+        <span className="text-xs font-semibold text-emerald-700 truncate">Gérant</span>
+      </div>
+      <div className="flex-1 flex justify-center items-center gap-1.5 py-1.5 border border-slate-200 bg-white rounded-md">
+        <div className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></div>
+        <span className="text-xs font-semibold text-slate-600 truncate">Caissier</span>
+      </div>
+    </div>
+  </div>
+);
 
 export const Features: React.FC = () => {
   return (
@@ -69,8 +210,8 @@ export const Features: React.FC = () => {
               <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Création de produits en 1 clic</li>
             </ul>
           </div>
-          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
-            <img src="/catalogue_produit.png" alt="Interface du catalogue produit" loading="lazy" decoding="async" className="w-full h-full object-cover rounded-xl shadow-sm" />
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-4 md:p-6 overflow-hidden">
+            <CatalogPreviewUI />
           </div>
         </div>
 
@@ -89,8 +230,8 @@ export const Features: React.FC = () => {
               <li className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-blue-600" /> Sécurité des accès employés</li>
             </ul>
           </div>
-          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-2">
-             <img src="/dashboard_multiboutique.png" alt="Dashboard multi-boutiques" loading="lazy" decoding="async" className="w-full h-full object-cover rounded-xl shadow-sm" />
+          <div className="lg:w-1/2 w-full h-[400px] bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner p-4 md:p-6 overflow-hidden">
+             <MultiStorePreviewUI />
           </div>
         </div>
       </section>
