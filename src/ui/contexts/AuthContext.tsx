@@ -11,9 +11,6 @@ interface AuthState {
   isLoading: boolean;
   adminUser: PlatformAdmin | null;
   isAdminAuthenticated: boolean;
-  isLocked: boolean;
-  failedAttempts: number;
-  lockoutUntil: number | null;
 }
 
 interface AuthContextType extends AuthState {
@@ -24,7 +21,6 @@ interface AuthContextType extends AuthState {
   selectOrganization: (orgId: string) => Promise<void>;
   selectShop: (shopId: string) => Promise<void>;
   logoutAdmin: () => void;
-  unlockTerminal: (pin: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,9 +35,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading: true,
     adminUser: null,
     isAdminAuthenticated: false,
-    isLocked: true,
-    failedAttempts: 0,
-    lockoutUntil: null,
   });
 
   const repos = getRepositories();
@@ -309,9 +302,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoading: false,
       adminUser: null,
       isAdminAuthenticated: false,
-      isLocked: true,
-      failedAttempts: 0,
-      lockoutUntil: null,
     });
     window.location.href = '/';
   };
@@ -380,7 +370,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
            // Create missing admin record for the user if they login with correct email
            const newAdmin = { userId: user.id, role: 'super_admin' as Role };
            localStorage.setItem('boutika_admin_id', newAdmin.userId);
-           setState(prev => ({ ...prev, adminUser: newAdmin as PlatformAdmin, isAdminAuthenticated: true, isLocked: false }));
+           setState(prev => ({ ...prev, adminUser: newAdmin as PlatformAdmin, isAdminAuthenticated: true }));
            return true;
         }
       }
@@ -390,44 +380,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const unlockTerminal = async (pin: string): Promise<boolean> => {
-    if (state.lockoutUntil && Date.now() < state.lockoutUntil) {
-      throw new Error("Terminal temporairement bloqué. Veuillez patienter.");
-    }
 
-    try {
-      if (state.user?.phone) {
-        await repos.auth.signInWithPhone(state.user.phone, pin);
-      } else if (state.user?.email) {
-        await repos.auth.signInAdminWithEmail(state.user.email, pin);
-      } else {
-        throw new Error("Impossible de vérifier le PIN pour cet utilisateur.");
-      }
-      
-      setState(prev => ({ ...prev, isLocked: false, failedAttempts: 0, lockoutUntil: null }));
-      return true;
-    } catch (error: any) {
-      const newAttempts = state.failedAttempts + 1;
-      let newLockout = state.lockoutUntil;
-      
-      if (newAttempts >= 5) {
-        newLockout = Date.now() + 60000; // 1 minute lockout
-      }
-      
-      setState(prev => ({ ...prev, failedAttempts: newAttempts, lockoutUntil: newLockout }));
-      
-      if (state.currentOrganization) {
-         repos.auditLogs.create({
-           organizationId: state.currentOrganization.id,
-           userId: state.user?.id,
-           action: 'unlock_failed',
-           metadata: { failedAttempts: newAttempts }
-         }).catch(console.error);
-      }
-      
-      throw error;
-    }
-  };
 
   const logoutAdmin = () => {
     localStorage.removeItem('boutika_admin_id');
@@ -436,7 +389,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, signUpWithPhone, signInWithPhone, signInAdminWithEmail, logout, selectOrganization, selectShop, logoutAdmin, unlockTerminal }}>
+    <AuthContext.Provider value={{ ...state, signUpWithPhone, signInWithPhone, signInAdminWithEmail, logout, selectOrganization, selectShop, logoutAdmin }}>
       {children}
     </AuthContext.Provider>
   );

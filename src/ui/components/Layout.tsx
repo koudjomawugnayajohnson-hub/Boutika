@@ -4,21 +4,20 @@ import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { LogOut } from 'lucide-react';
-import { PINLockModal } from './PINLockModal';
 
 export const Layout: React.FC = () => {
-  const { user, isAuthenticated, isLoading, logout, currentOrganization, currentShop, role, isLocked } = useAuth();
+  const { user, isAuthenticated, isLoading, logout, currentOrganization, currentShop, role } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (role === 'member' && currentShop && !isLocked) {
+    if (role === 'member' && currentShop) {
       const posPath = `/app/shops/${currentShop.id}/pos`;
       if (!location.pathname.startsWith(posPath)) {
         navigate(posPath, { replace: true });
       }
     }
-  }, [role, currentShop, location.pathname, isLocked, navigate]);
+  }, [role, currentShop, location.pathname, navigate]);
 
   const isMember = role === 'member';
 
@@ -154,7 +153,6 @@ export const Layout: React.FC = () => {
       </nav>
       )}
     </div>
-    {isLocked && <PINLockModal />}
     </>
   );
 };
