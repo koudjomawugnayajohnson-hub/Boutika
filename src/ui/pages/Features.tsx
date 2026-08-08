@@ -297,10 +297,10 @@ export const Features: React.FC = () => {
           Rejoignez les milliers de commerçants qui pilotent leur activité en toute simplicité.
         </p>
         <Link 
-          to="/login" 
+          to="/register" 
           className="inline-flex items-center justify-center px-10 py-4 text-base font-medium text-white bg-slate-900 rounded-md hover:bg-slate-800 transition-colors shadow-lg"
         >
-          Se connecter à Boutika
+          Créer mon compte Boutika
         </Link>
       </section>
 
