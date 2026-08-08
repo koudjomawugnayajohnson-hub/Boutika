@@ -7,7 +7,7 @@ import { mockDb } from '../../infrastructure/mock/MockDatabase';
 import { OnboardingWizard } from '../components/OnboardingWizard';
 
 export const Dashboard: React.FC = () => {
-  const { user, currentOrganization, currentShop, selectOrganization, selectShop, role } = useAuth();
+  const { user, currentOrganization, currentShop, selectOrganization, selectShop, role, logout } = useAuth();
   const [myOrgs, setMyOrgs] = useState<Organization[]>([]);
   const [myShops, setMyShops] = useState<Shop[]>([]);
   const [revenue, setRevenue] = useState(0);
@@ -40,6 +40,13 @@ export const Dashboard: React.FC = () => {
     
     loadData();
   }, [user]);
+
+  useEffect(() => {
+    if (myOrgs.length === 1 && !currentOrganization) {
+      sessionStorage.removeItem('boutika_consolidated_view');
+      selectOrganization(myOrgs[0].id);
+    }
+  }, [myOrgs, currentOrganization, selectOrganization]);
 
   useEffect(() => {
     const loadShops = async () => {
@@ -108,9 +115,18 @@ export const Dashboard: React.FC = () => {
   if (!currentOrganization) {
     return (
       <div className="flex flex-col gap-lg mb-lg">
-        <h1 className="font-headline-lg text-headline-lg text-on-surface" data-testid="dashboard-title">
-          {t('dashboard.overviewTitle')}
-        </h1>
+        <div className="flex justify-between items-center w-full max-w-2xl">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface" data-testid="dashboard-title">
+            {t('dashboard.overviewTitle')}
+          </h1>
+          <button 
+            onClick={logout} 
+            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
+          >
+            <span className="material-symbols-outlined">logout</span>
+            Déconnexion
+          </button>
+        </div>
         {myOrgs.length === 0 ? (
           <div className="w-full mt-8">
             <OnboardingWizard onComplete={() => {}} />
@@ -120,7 +136,10 @@ export const Dashboard: React.FC = () => {
             {myOrgs.map(org => (
               <button 
                 key={org.id} 
-                onClick={() => selectOrganization(org.id)}
+                onClick={() => {
+                  sessionStorage.removeItem('boutika_consolidated_view');
+                  selectOrganization(org.id);
+                }}
                 className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:bg-surface-container-low transition-colors text-left flex flex-col gap-xs shadow-sm"
               >
                 <span className="font-title-lg text-title-lg text-primary">{org.name}</span>
@@ -135,8 +154,69 @@ export const Dashboard: React.FC = () => {
 
   if (myShops.length === 0) {
     return (
-      <div className="w-full mt-8 pb-24">
-        <OnboardingWizard onComplete={() => {}} initialStep="shop" />
+      <div className="flex flex-col gap-lg mb-lg">
+        <div className="flex justify-between items-center w-full max-w-2xl">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface">
+            Configuration
+          </h1>
+          <button 
+            onClick={logout} 
+            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
+          >
+            <span className="material-symbols-outlined">logout</span>
+            Déconnexion
+          </button>
+        </div>
+        <div className="w-full mt-2 pb-24">
+          <OnboardingWizard onComplete={() => {}} initialStep="shop" />
+        </div>
+      </div>
+    );
+  }
+
+  const isConsolidated = sessionStorage.getItem('boutika_consolidated_view') === 'true';
+
+  if (myShops.length > 0 && !currentShop && !isConsolidated) {
+    return (
+      <div className="flex flex-col gap-lg mb-lg">
+        <div className="flex justify-between items-center w-full max-w-2xl">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface">
+            Sélectionnez une boutique
+          </h1>
+          <button 
+            onClick={logout} 
+            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
+          >
+            <span className="material-symbols-outlined">logout</span>
+            Déconnexion
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-md w-full max-w-2xl mt-4">
+          {myShops.map(shop => (
+            <button 
+              key={shop.id} 
+              onClick={() => {
+                sessionStorage.removeItem('boutika_consolidated_view');
+                selectShop(shop.id);
+              }}
+              className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:bg-surface-container-low transition-colors text-left flex flex-col gap-xs shadow-sm"
+            >
+              <span className="font-title-lg text-title-lg text-primary">{shop.name}</span>
+              <span className="font-body-md text-on-surface-variant">{shop.address || 'Aucune adresse'}</span>
+            </button>
+          ))}
+          <button 
+            onClick={() => {
+              sessionStorage.setItem('boutika_consolidated_view', 'true');
+              selectShop(''); 
+              // React will re-render and since isConsolidated is now true, it will show the dashboard
+            }}
+            className="bg-primary-container/20 border border-primary/30 p-md rounded-xl hover:bg-primary-container/30 transition-colors text-left flex flex-col gap-xs shadow-sm"
+          >
+            <span className="font-title-lg text-title-lg text-primary">Toutes les boutiques</span>
+            <span className="font-body-md text-on-surface-variant">Vue consolidée</span>
+          </button>
+        </div>
       </div>
     );
   }

@@ -233,6 +233,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const selectOrganization = async (orgId: string) => {
     if (!state.user) return;
     
+    if (!orgId) {
+      setState(prev => ({ ...prev, currentOrganization: null, currentShop: null, role: null }));
+      return;
+    }
+
     const org = await repos.organizations.findById(orgId);
     if (!org) throw new Error("Organization not found");
 
@@ -251,6 +256,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const selectShop = async (shopId: string) => {
     if (!state.user || !state.currentOrganization) return;
     
+    if (!shopId) {
+      setState(prev => ({ ...prev, currentShop: null }));
+      return;
+    }
+
     const shop = await repos.shops.findById(state.currentOrganization.id, shopId);
     if (!shop) throw new Error("Shop not found");
 
