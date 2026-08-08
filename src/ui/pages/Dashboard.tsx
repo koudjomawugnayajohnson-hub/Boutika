@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 import { getRepositories } from '../../infrastructure/config';
 import { Organization, Shop } from '../../core/types';
-import { mockDb } from '../../infrastructure/mock/MockDatabase';
 import { OnboardingWizard } from '../components/OnboardingWizard';
 
 export const Dashboard: React.FC = () => {
@@ -34,7 +33,7 @@ export const Dashboard: React.FC = () => {
         if (org) loadedOrgs.push(org);
       }
       
-      const allOrgs = mockDb.organizations;
+      const allOrgs = await repos.organizations.findAll().catch(() => []);
       const owned = allOrgs.filter((o: any) => o.ownerId === user.id);
       for (const org of owned) {
         if (!loadedOrgs.find(o => o.id === org.id)) {
@@ -126,13 +125,6 @@ export const Dashboard: React.FC = () => {
           <h1 className="font-headline-lg text-headline-lg text-on-surface" data-testid="dashboard-title">
             {t('dashboard.overviewTitle')}
           </h1>
-          <button 
-            onClick={logout} 
-            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
-          >
-            <span className="material-symbols-outlined">logout</span>
-            Déconnexion
-          </button>
         </div>
         {myOrgs.length === 0 ? (
           <div className="w-full mt-8 p-6 text-center border border-outline-variant rounded-xl bg-surface-container-lowest">
@@ -168,13 +160,6 @@ export const Dashboard: React.FC = () => {
           <h1 className="font-headline-lg text-headline-lg text-on-surface">
             Configuration
           </h1>
-          <button 
-            onClick={logout} 
-            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
-          >
-            <span className="material-symbols-outlined">logout</span>
-            Déconnexion
-          </button>
         </div>
         <div className="w-full mt-2 pb-24">
           <OnboardingWizard onComplete={loadShops} />
@@ -287,13 +272,6 @@ export const Dashboard: React.FC = () => {
           <h1 className="font-headline-lg text-headline-lg text-on-surface">
             Sélectionnez une boutique
           </h1>
-          <button 
-            onClick={logout} 
-            className="flex items-center gap-2 text-error hover:bg-error-container hover:text-error px-4 py-2 rounded-md font-medium transition-colors border border-error/30"
-          >
-            <span className="material-symbols-outlined">logout</span>
-            Déconnexion
-          </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-md w-full max-w-2xl mt-4">
           {myShops.map(shop => (

@@ -3,6 +3,7 @@ import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 import { NotificationsDropdown } from './NotificationsDropdown';
+import { LogOut } from 'lucide-react';
 
 export const Layout: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout, currentOrganization, currentShop, role } = useAuth();
@@ -31,22 +32,22 @@ export const Layout: React.FC = () => {
           <Link to="/" className="flex items-center gap-sm cursor-pointer hover:opacity-80 transition-opacity">
             <div className="font-headline-md text-headline-md text-primary">Boutika</div>
           </Link>
-          <div className="flex items-center gap-sm bg-surface-container-low border border-outline-variant rounded px-sm py-xs cursor-pointer hover:bg-surface-variant transition-colors" data-testid="shop-selector">
-            <span className="material-symbols-outlined text-on-surface-variant text-[20px]">storefront</span>
-            <span className="font-label-md text-label-md text-on-surface">
-              {currentShop ? currentShop.name : (currentOrganization ? currentOrganization.name : t('dashboard.selectOrganization'))}
-            </span>
-            <span className="material-symbols-outlined text-on-surface-variant text-[20px]">arrow_drop_down</span>
+          <div className="flex items-center justify-center flex-1 mx-4">
+            {currentOrganization ? (
+              <span className="font-semibold text-slate-800">{currentOrganization.name}</span>
+            ) : (
+              <div className="h-6 w-32 bg-slate-200 animate-pulse rounded"></div>
+            )}
           </div>
           <div className="flex items-center gap-sm">
             <NotificationsDropdown />
-            <div 
-              className="w-8 h-8 rounded bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md ml-xs cursor-pointer"
-              title={t('layout.logout')}
+            <button 
               onClick={logout}
+              title="Déconnexion"
+              className="ml-2 flex items-center justify-center text-slate-500 hover:text-red-600 transition-colors"
             >
-              <span className="material-symbols-outlined text-[16px]">logout</span>
-            </div>
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </header>

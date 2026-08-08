@@ -162,14 +162,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           }
 
-          // Basic mock logic fallback
+          // Basic logic fallback if no saved org id
           if (!orgToSelect) {
-            const mockOrg1 = await repos.organizations.findById('org1').catch(() => null);
-            if (mockOrg1 && mockOrg1.ownerId === user.id) {
-              orgToSelect = mockOrg1;
-              roleToSet = 'owner';
-              const shops = await repos.shops.findAllByOrganization('org1').catch(() => []);
-              if (shops.length > 0) shopToSelect = shops[0];
+            try {
+              const members = await repos.organizationMembers.findByUserId(user.id);
+              if (members.length > 0) {
+                const firstOrg = await repos.organizations.findById(members[0].organizationId);
+                if (firstOrg) {
+                  orgToSelect = firstOrg;
+                  roleToSet = members[0].role;
+                  const shops = await repos.shops.findAllByOrganization(firstOrg.id);
+                  if (shops.length > 0) shopToSelect = shops[0];
+                }
+              } else {
+                const allOrgs = await repos.organizations.findAll();
+                const owned = allOrgs.filter((o: any) => o.ownerId === user.id);
+                if (owned.length > 0) {
+                  orgToSelect = owned[0];
+                  roleToSet = 'owner';
+                  const shops = await repos.shops.findAllByOrganization(owned[0].id);
+                  if (shops.length > 0) shopToSelect = shops[0];
+                }
+              }
+            } catch (err) {
+              console.error('Error fetching fallback org:', err);
             }
           }
 
