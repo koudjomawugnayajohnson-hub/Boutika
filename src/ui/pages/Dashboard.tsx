@@ -109,7 +109,7 @@ export const Dashboard: React.FC = () => {
     return (
       <div className="flex flex-col gap-lg mb-lg">
         <h1 className="font-headline-lg text-headline-lg text-on-surface" data-testid="dashboard-title">
-          {t('dashboard.overview')}
+          {t('dashboard.overviewTitle')}
         </h1>
         {myOrgs.length === 0 ? (
           <div className="w-full mt-8">

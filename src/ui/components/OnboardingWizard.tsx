@@ -10,7 +10,7 @@ interface OnboardingWizardProps {
 
 export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, initialStep = 'organization' }) => {
   const { user, currentOrganization, selectOrganization, selectShop } = useAuth();
-  const [step, setStep] = useState<'organization' | 'shop'>(initialStep);
+  const [step, setStep] = useState<'organization' | 'shop' | 'success'>(initialStep);
   
   const [orgName, setOrgName] = useState('');
   
@@ -87,7 +87,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
       });
 
       await selectShop(newShop.id);
-      onComplete();
+      setStep('success');
     } catch (err) {
       console.error(err);
     } finally {
@@ -181,6 +181,28 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
             {loading ? 'Création...' : 'Créer ma boutique'}
           </button>
         </form>
+      )}
+
+      {step === 'success' && (
+        <div className="flex flex-col items-center justify-center gap-4 text-center py-6 animate-in fade-in zoom-in duration-300">
+          <div className="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-2">
+            <span className="material-symbols-outlined text-[32px]">check_circle</span>
+          </div>
+          <h2 className="text-headline-sm font-bold text-on-surface">Félicitations ! 🎉</h2>
+          <p className="text-body-lg text-on-surface-variant max-w-[280px]">
+            Votre boutique <strong>{shopName}</strong> a été créée avec succès.
+          </p>
+          <p className="text-body-md text-outline">
+            Bienvenue sur Boutika, vous êtes maintenant prêt(e) à gérer votre commerce avec élégance.
+          </p>
+          <button 
+            onClick={onComplete}
+            className="w-full bg-primary text-on-primary py-3 rounded-full font-bold hover:bg-primary/90 transition-all mt-4 flex items-center justify-center gap-2"
+          >
+            Accéder à mon tableau de bord
+            <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </button>
+        </div>
       )}
     </div>
   );
