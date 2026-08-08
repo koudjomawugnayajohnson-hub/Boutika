@@ -1,13 +1,26 @@
 import React from 'react';
-import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
+import { Outlet, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../i18n';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { LogOut } from 'lucide-react';
+import { PINLockModal } from './PINLockModal';
 
 export const Layout: React.FC = () => {
-  const { user, isAuthenticated, isLoading, logout, currentOrganization, currentShop, role } = useAuth();
+  const { user, isAuthenticated, isLoading, logout, currentOrganization, currentShop, role, isLocked } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (role === 'member' && currentShop && !isLocked) {
+      const posPath = `/app/shops/${currentShop.id}/pos`;
+      if (!location.pathname.startsWith(posPath)) {
+        navigate(posPath, { replace: true });
+      }
+    }
+  }, [role, currentShop, location.pathname, isLocked, navigate]);
+
+  const isMember = role === 'member';
 
   const getNavClass = (path: string, isMobile: boolean = false) => {
     const isActive = path === '/app' ? location.pathname === '/app' || location.pathname === '/app/' : location.pathname.startsWith(path);
@@ -26,6 +39,7 @@ export const Layout: React.FC = () => {
   }
 
   return (
+    <>
     <div className="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col pb-[80px] md:pb-0">
       <header className="w-full top-0 sticky bg-surface-bright border-b border-outline-variant z-40 shrink-0">
         <div className="flex items-center justify-between px-lg h-16 w-full max-w-container-max mx-auto">
@@ -53,6 +67,7 @@ export const Layout: React.FC = () => {
       </header>
 
       <div className="flex flex-col md:flex-row flex-1 max-w-container-max mx-auto w-full">
+        {!isMember && (
         <nav className="hidden md:flex flex-col w-[240px] border-r border-outline-variant bg-surface-bright py-lg px-md gap-sm shrink-0">
           <Link to="/app" className={getNavClass('/app')}>
             <span className="material-symbols-outlined">dashboard</span>
@@ -91,12 +106,14 @@ export const Layout: React.FC = () => {
             {t('layout.navAccount')}
           </Link>
         </nav>
+        )}
         <main className="flex-1 px-sm md:px-lg py-md md:py-lg w-full flex flex-col gap-lg overflow-x-hidden">
           <Outlet />
         </main>
       </div>
 
       {/* Bottom Navigation for Mobile */}
+      {!isMember && (
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-surface-bright border-t border-outline-variant flex items-center justify-around h-[80px] px-xs pb-safe z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <Link to="/app" className={getNavClass('/app', true)}>
           <span className="material-symbols-outlined">dashboard</span>
@@ -135,6 +152,9 @@ export const Layout: React.FC = () => {
           <span className="text-[10px] font-medium">{t('layout.navAccount')}</span>
         </Link>
       </nav>
+      )}
     </div>
+    {isLocked && <PINLockModal />}
+    </>
   );
 };
