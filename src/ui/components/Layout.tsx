@@ -57,6 +57,10 @@ export const Layout: React.FC = () => {
             <span className="material-symbols-outlined">dashboard</span>
             {t('layout.navDashboard')}
           </Link>
+          <Link to="/app/shops" className={getNavClass('/app/shops')}>
+            <span className="material-symbols-outlined">storefront</span>
+            Boutiques
+          </Link>
           <Link to="/app/catalog" className={getNavClass('/app/catalog')}>
             <span className="material-symbols-outlined">category</span>
             Catalogue
@@ -96,6 +100,10 @@ export const Layout: React.FC = () => {
         <Link to="/app" className={getNavClass('/app', true)}>
           <span className="material-symbols-outlined">dashboard</span>
           <span className="text-[10px] font-medium">{t('layout.navDashboard')}</span>
+        </Link>
+        <Link to="/app/shops" className={getNavClass('/app/shops', true)}>
+          <span className="material-symbols-outlined">storefront</span>
+          <span className="text-[10px] font-medium">Boutiques</span>
         </Link>
         <Link to="/app/catalog" className={getNavClass('/app/catalog', true)}>
           <span className="material-symbols-outlined">category</span>
