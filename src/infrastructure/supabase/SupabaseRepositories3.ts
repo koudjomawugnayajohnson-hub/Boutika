@@ -18,7 +18,7 @@ import { supabase } from './client';
 
 export class SupabaseInventoryRepository implements InventoryRepository {
   async findByProduct(organizationId: string, shopId: string, productId: string): Promise<InventoryItem | null> {
-    const { data, error } = await supabase.from('inventory').select('*')
+    const { data, error } = await supabase.from('inventory_items').select('*')
       .eq('shop_id', shopId)
       .eq('product_id', productId)
       .single();
@@ -34,7 +34,7 @@ export class SupabaseInventoryRepository implements InventoryRepository {
   }
 
   async findAllByShop(organizationId: string, shopId: string): Promise<InventoryItem[]> {
-    const { data, error } = await supabase.from('inventory').select('*').eq('shop_id', shopId);
+    const { data, error } = await supabase.from('inventory_items').select('*').eq('shop_id', shopId);
     if (error) throw new Error(error.message);
     return data.map(d => ({
       id: d.id,
@@ -47,7 +47,7 @@ export class SupabaseInventoryRepository implements InventoryRepository {
   }
 
   async upsert(item: Omit<InventoryItem, 'id' | 'updatedAt'>): Promise<InventoryItem> {
-    const { data, error } = await supabase.from('inventory').upsert({
+    const { data, error } = await supabase.from('inventory_items').upsert({
       shop_id: item.shopId,
       product_id: item.productId,
       quantity: item.quantity
