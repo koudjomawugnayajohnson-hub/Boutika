@@ -10,6 +10,8 @@ export const Team: React.FC = () => {
   // Minimal state for the mock
   const [shops, setShops] = useState<Shop[]>([]);
   const [members, setMembers] = useState<any[]>([]);
+  const [invitations, setInvitations] = useState<any[]>([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (currentOrganization) {
@@ -30,6 +32,30 @@ export const Team: React.FC = () => {
       return { ...m, user: u };
     }));
     setMembers(memberData);
+
+    const fetchedInvitations = await repos.invitations.findAllByOrganization(currentOrganization.id);
+    setInvitations(fetchedInvitations.filter(i => i.status === 'pending'));
+  };
+
+  const handleInvite = async (data: { name: string, phone: string, role: string, shopIds: string[] }) => {
+    if (!currentOrganization || !user) return;
+    const repos = getRepositories();
+    
+    try {
+      await repos.invitations.create({
+        organizationId: currentOrganization.id,
+        inviterId: user.id,
+        name: data.name,
+        phone: data.phone,
+        role: data.role === 'manager' ? 'admin' : 'member',
+        status: 'pending'
+      });
+      setInviteModalOpen(false);
+      loadData();
+    } catch (e) {
+      console.error(e);
+      alert("Erreur lors de l'invitation");
+    }
   };
 
   return (
@@ -72,6 +98,20 @@ export const Team: React.FC = () => {
                 </td>
               </tr>
             ))}
+            {invitations.map(inv => (
+              <tr key={inv.id} className="border-b border-outline-variant last:border-0 hover:bg-surface-container-low transition-colors opacity-70">
+                <td className="p-4">
+                  <div className="font-medium text-on-surface">{inv.name || 'Invité'}</div>
+                  <div className="text-sm text-on-surface-variant">{inv.phone}</div>
+                </td>
+                <td className="p-4 capitalize text-on-surface">{inv.role === 'admin' ? 'manager' : 'vendeur'}</td>
+                <td className="p-4">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-surface-container-highest text-on-surface-variant">
+                    En attente
+                  </span>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -80,23 +120,20 @@ export const Team: React.FC = () => {
         <InviteModal 
           shops={shops} 
           onClose={() => setInviteModalOpen(false)} 
-          onSubmit={() => {
-            setInviteModalOpen(false);
-            // Reload if needed
-          }} 
+          onSubmit={handleInvite} 
         />
       )}
     </div>
   );
 };
 
-const InviteModal: React.FC<{ shops: Shop[], onClose: () => void, onSubmit: () => void }> = ({ shops, onClose, onSubmit }) => {
+const InviteModal: React.FC<{ shops: Shop[], onClose: () => void, onSubmit: (data: any) => Promise<void> }> = ({ shops, onClose, onSubmit }) => {
   const [name, setName] = useState('');
   const [countryCode, setCountryCode] = useState('+228');
   const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
   const [role, setRole] = useState<'manager' | 'vendeur'>('manager');
   const [selectedShops, setSelectedShops] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleToggleShop = (id: string) => {
     setSelectedShops(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
@@ -105,6 +142,18 @@ const InviteModal: React.FC<{ shops: Shop[], onClose: () => void, onSubmit: () =
   const handleSelectAll = () => {
     if (selectedShops.length === shops.length) setSelectedShops([]);
     else setSelectedShops(shops.map(s => s.id));
+  };
+
+  const handleSubmit = async () => {
+    if (!name || !phone) return;
+    setIsSubmitting(true);
+    await onSubmit({
+      name,
+      phone: `${countryCode}${phone.replace(/^0+/, '')}`,
+      role,
+      shopIds: selectedShops
+    });
+    setIsSubmitting(false);
   };
 
   return (
@@ -167,20 +216,6 @@ const InviteModal: React.FC<{ shops: Shop[], onClose: () => void, onSubmit: () =
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full p-2 focus:outline-none text-on-surface bg-transparent"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-label-md uppercase tracking-wider text-on-surface font-medium text-xs">Mot de passe</label>
-              <div className="relative">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">lock</span>
-                <input 
-                  type="password" 
-                  placeholder="Définir un mot de passe" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-outline-variant rounded p-2 pl-10 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-on-surface"
                 />
               </div>
             </div>
@@ -265,11 +300,12 @@ const InviteModal: React.FC<{ shops: Shop[], onClose: () => void, onSubmit: () =
             ANNULER
           </button>
           <button 
-            onClick={onSubmit}
-            className="flex-1 py-2 px-4 bg-primary text-on-primary rounded font-medium hover:bg-primary-container transition-colors flex items-center justify-center gap-2 text-sm"
+            onClick={handleSubmit}
+            disabled={isSubmitting || !name || !phone}
+            className="flex-1 py-2 px-4 bg-primary text-on-primary rounded font-medium hover:bg-primary-container transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50"
           >
             <span className="material-symbols-outlined text-[18px]">save</span>
-            ENREGISTRER
+            {isSubmitting ? 'ENVOI...' : 'ENREGISTRER'}
           </button>
         </div>
 
