@@ -127,10 +127,55 @@ export const Dashboard: React.FC = () => {
           </h1>
         </div>
         {myOrgs.length === 0 ? (
-          <div className="w-full mt-8 p-6 text-center border border-outline-variant rounded-xl bg-surface-container-lowest">
+          <div className="w-full mt-8 p-6 text-center border border-outline-variant rounded-xl bg-surface-container-lowest flex flex-col items-center">
             <span className="material-symbols-outlined text-[48px] text-error mb-4">error_outline</span>
             <h2 className="text-xl font-bold text-on-surface mb-2">Aucune entreprise trouvée</h2>
-            <p className="text-on-surface-variant mb-6">Votre compte n'est associé à aucune entreprise. Veuillez créer un nouveau compte ou contacter le support.</p>
+            <p className="text-on-surface-variant mb-6">Votre compte n'est associé à aucune entreprise. Vous pouvez en créer une ci-dessous :</p>
+            
+            <div className="w-full max-w-sm">
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const name = (e.currentTarget.elements.namedItem('orgName') as HTMLInputElement).value;
+                  if (!name || !user) return;
+                  try {
+                    const repos = getRepositories();
+                    const org = await repos.organizations.create({
+                      name,
+                      ownerId: user.id,
+                      planTier: 'starter',
+                      settings: {}
+                    });
+                    await repos.shops.create({
+                      organizationId: org.id,
+                      name: 'Boutique Principale',
+                      address: ''
+                    });
+                    await repos.organizationMembers.create({
+                      organizationId: org.id,
+                      userId: user.id,
+                      role: 'owner'
+                    });
+                    window.location.reload();
+                  } catch (err) {
+                    alert("Erreur lors de la création de l'entreprise");
+                    console.error(err);
+                  }
+                }}
+                className="flex flex-col gap-3"
+              >
+                <input 
+                  type="text" 
+                  name="orgName"
+                  placeholder="Nom de l'entreprise"
+                  required
+                  className="w-full px-4 py-3 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-on-surface"
+                />
+                <button type="submit" className="w-full bg-primary text-on-primary py-3 rounded-lg font-bold">
+                  Créer mon entreprise
+                </button>
+              </form>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-md w-full max-w-2xl">

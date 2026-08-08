@@ -54,14 +54,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (pendingOrgName) {
       try {
-        // Create org via RPC
-        orgToSelect = await repos.organizations.createViaRpc(pendingOrgName);
+        // Create org directly instead of using missing RPC
+        orgToSelect = await repos.organizations.create({
+          name: pendingOrgName,
+          ownerId: user.id,
+          planTier: 'starter',
+          settings: {}
+        });
+        
+        // Create default shop
+        shopToSelect = await repos.shops.create({
+          organizationId: orgToSelect.id,
+          name: 'Boutique Principale',
+          address: ''
+        });
+
+        // Add user as owner in organization_members
+        await repos.organizationMembers.create({
+          organizationId: orgToSelect.id,
+          userId: user.id,
+          role: 'owner'
+        });
+
         localStorage.removeItem('boutika_pending_org_name');
         roleToSet = 'owner';
-        const shops = await repos.shops.findAllByOrganization(orgToSelect.id);
-        if (shops.length > 0) shopToSelect = shops[0];
       } catch (err) {
-        console.error("Failed to create org via RPC", err);
+        console.error("Failed to create org", err);
       }
     } else {
       // Login flow: Fetch organizations for user
