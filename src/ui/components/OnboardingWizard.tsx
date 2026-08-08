@@ -5,14 +5,11 @@ import { t } from '../i18n';
 
 interface OnboardingWizardProps {
   onComplete: () => void;
-  initialStep?: 'organization' | 'shop';
 }
 
-export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, initialStep = 'organization' }) => {
+export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete }) => {
   const { user, currentOrganization, selectOrganization, selectShop } = useAuth();
-  const [step, setStep] = useState<'organization' | 'shop' | 'success'>(initialStep);
-  
-  const [orgName, setOrgName] = useState('');
+  const [step, setStep] = useState<'shop' | 'success'>('shop');
   
   const [shopName, setShopName] = useState('');
   const [shopAddress, setShopAddress] = useState('');
@@ -20,44 +17,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
 
   const [loading, setLoading] = useState(false);
 
-  const handleCreateOrg = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !orgName.trim()) return;
-    setLoading(true);
-    try {
-      const repos = getRepositories();
-      const newOrg = await repos.organizations.create({
-        name: orgName.trim(),
-        ownerId: user.id,
-        planTier: 'starter',
-        settings: {}
-      });
 
-      // Audit Log for Lot D
-      await repos.auditLogs.create({
-        organizationId: newOrg.id,
-        userId: user.id,
-        action: 'organization_created',
-        entityType: 'organization',
-        entityId: newOrg.id,
-      });
-
-      // Make the user an owner member
-      await repos.organizationMembers.create({
-        organizationId: newOrg.id,
-        userId: user.id,
-        role: 'owner',
-        status: 'accepted'
-      });
-
-      await selectOrganization(newOrg.id);
-      setStep('shop');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreateShop = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,37 +57,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
 
   return (
     <div className="max-w-md mx-auto bg-surface border border-outline-variant rounded-xl p-6 shadow-sm mt-8">
-      {step === 'organization' && (
-        <form onSubmit={handleCreateOrg} className="flex flex-col gap-4">
-          <div className="text-center mb-2">
-            <div className="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-[24px]">storefront</span>
-            </div>
-            <h2 className="text-title-lg font-bold text-on-surface">Bienvenue sur Boutika !</h2>
-            <p className="text-body-md text-on-surface-variant mt-1">Commençons par créer votre entreprise.</p>
-          </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-label-md font-medium text-on-surface">Nom de l'entreprise</label>
-            <input 
-              type="text" 
-              required
-              value={orgName}
-              onChange={e => setOrgName(e.target.value)}
-              placeholder="Ex: Ma Super Boutique"
-              className="px-3 py-2 bg-surface border border-outline-variant rounded-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={loading || !orgName.trim()}
-            className="w-full bg-primary text-on-primary py-2.5 rounded-full font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 mt-2"
-          >
-            {loading ? 'Création...' : 'Créer mon entreprise'}
-          </button>
-        </form>
-      )}
 
       {step === 'shop' && (
         <form onSubmit={handleCreateShop} className="flex flex-col gap-4">

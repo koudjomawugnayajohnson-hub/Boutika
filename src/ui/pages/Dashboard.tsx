@@ -135,8 +135,10 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
         {myOrgs.length === 0 ? (
-          <div className="w-full mt-8">
-            <OnboardingWizard onComplete={() => {}} />
+          <div className="w-full mt-8 p-6 text-center border border-outline-variant rounded-xl bg-surface-container-lowest">
+            <span className="material-symbols-outlined text-[48px] text-error mb-4">error_outline</span>
+            <h2 className="text-xl font-bold text-on-surface mb-2">Aucune entreprise trouvée</h2>
+            <p className="text-on-surface-variant mb-6">Votre compte n'est associé à aucune entreprise. Veuillez créer un nouveau compte ou contacter le support.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-md w-full max-w-2xl">
@@ -175,7 +177,7 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
         <div className="w-full mt-2 pb-24">
-          <OnboardingWizard onComplete={loadShops} initialStep="shop" />
+          <OnboardingWizard onComplete={loadShops} />
         </div>
       </div>
     );
