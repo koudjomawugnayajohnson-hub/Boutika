@@ -178,7 +178,7 @@ export const Features: React.FC = () => {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link 
-            to="/register" 
+            to="/login" 
             className="px-8 py-4 text-base font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800 transition-colors shadow-sm"
           >
             Commencer maintenant
@@ -297,10 +297,10 @@ export const Features: React.FC = () => {
           Rejoignez les milliers de commerçants qui pilotent leur activité en toute simplicité.
         </p>
         <Link 
-          to="/register" 
+          to="/login" 
           className="inline-flex items-center justify-center px-10 py-4 text-base font-medium text-white bg-slate-900 rounded-md hover:bg-slate-800 transition-colors shadow-lg"
         >
-          Créer mon compte Boutika
+          Se connecter à Boutika
         </Link>
       </section>
 

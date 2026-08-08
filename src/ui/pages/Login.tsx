@@ -66,12 +66,21 @@ export const Login: React.FC = () => {
   ];
 
   return (
-    <div className="bg-surface text-on-surface h-screen flex flex-col items-center justify-center font-body-md">
-      <div className="w-full max-w-[400px] px-sm md:px-0">
-        <div className="flex items-center justify-center mb-xl">
-          <span className="text-headline-md font-headline-md font-bold text-primary tracking-tight">Boutika</span>
-        </div>
-        
+    <div className="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center font-body-md relative">
+      {/* Header minimaliste */}
+      <header className="absolute top-0 w-full p-6 flex justify-between items-center">
+        <span className="text-xl font-bold text-primary tracking-tight cursor-pointer" onClick={() => navigate('/')}>
+          Boutika
+        </span>
+        <button 
+          onClick={() => navigate('/register')}
+          className="text-sm font-medium text-primary hover:underline px-4 py-2 border border-primary/20 rounded-md hover:bg-primary/5 transition-colors"
+        >
+          Nouveau compte
+        </button>
+      </header>
+
+      <div className="w-full max-w-[400px] px-sm md:px-0 mt-8">
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex flex-col gap-lg shadow-sm">
           <div className="flex flex-col gap-xs text-center">
             <h1 className="text-headline-md font-headline-md md:text-headline-lg md:font-headline-lg text-on-surface">Connexion</h1>
@@ -145,16 +154,6 @@ export const Login: React.FC = () => {
                 </>
               )}
             </button>
-
-            <div className="mt-4 text-center">
-              <button 
-                type="button" 
-                onClick={() => navigate('/register')}
-                className="text-primary font-label-md text-label-md hover:underline"
-              >
-                {t('auth.registerTitle')}
-              </button>
-            </div>
           </form>
         </div>
       </div>
