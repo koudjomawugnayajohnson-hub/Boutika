@@ -129,6 +129,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               const shops = await repos.shops.findAllByOrganization(firstOrg.id);
               if (shops.length > 0) shopToSelect = shops[0];
             }
+          } else {
+            // Fallback for users created before organization_members was implemented
+            // or if local storage has a saved org
+            const savedOrgId = localStorage.getItem('boutika_org_id');
+            if (savedOrgId) {
+              const org = await repos.organizations.findById(savedOrgId).catch(() => null);
+              if (org && org.ownerId === user.id) {
+                orgToSelect = org;
+                roleToSet = 'owner';
+                const shops = await repos.shops.findAllByOrganization(org.id);
+                if (shops.length > 0) shopToSelect = shops[0];
+              }
+            }
+            
+            if (!orgToSelect) {
+              const allOrgs = await repos.organizations.findAll();
+              const owned = allOrgs.filter((o: any) => o.ownerId === user.id);
+              if (owned.length > 0) {
+                orgToSelect = owned[0];
+                roleToSet = 'owner';
+                const shops = await repos.shops.findAllByOrganization(owned[0].id);
+                if (shops.length > 0) shopToSelect = shops[0];
+                
+                // Heal the data
+                try {
+                  await repos.organizationMembers.create({
+                    organizationId: owned[0].id,
+                    userId: user.id,
+                    role: 'owner'
+                  });
+                } catch (e) {
+                  // ignore
+                }
+              }
+            }
           }
         }
       }
