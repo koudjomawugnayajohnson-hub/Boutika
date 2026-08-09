@@ -25,6 +25,8 @@ export const Shops: React.FC = () => {
   useEffect(() => {
     if (currentOrganization?.id) {
       fetchShops();
+    } else {
+      setIsLoading(false);
     }
   }, [currentOrganization?.id]);
 
@@ -98,16 +100,35 @@ export const Shops: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Mes Boutiques</h1>
-          <p className="text-slate-500 text-sm mt-1">Gérez vos différents points de vente</p>
+          <p className="text-slate-500 mt-1">Gérez vos points de vente et points de stockage</p>
         </div>
-        <button
+        <button 
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shrink-0"
+          disabled={!currentOrganization}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Plus className="w-4 h-4" />
-          Ajouter une boutique
+          <Plus size={20} />
+          Nouvelle boutique
         </button>
       </div>
+
+      {!currentOrganization && !isLoading && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-12 text-center">
+          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Store className="w-8 h-8 text-blue-600" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800 mb-2">Aucune organisation</h3>
+          <p className="text-slate-500 mb-6 max-w-md mx-auto">
+            Vous devez créer ou rejoindre une organisation avant de pouvoir gérer des boutiques.
+          </p>
+          <Link 
+            to="/app"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Aller au tableau de bord
+          </Link>
+        </div>
+      )}
 
       {/* Content */}
       {isLoading ? (

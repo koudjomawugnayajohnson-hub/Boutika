@@ -36,7 +36,11 @@ export const ShopDashboard: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!currentOrganization || !role) return;
+    if (!currentOrganization || !role) {
+      setIsLoading(false);
+      setError('Aucune organisation sélectionnée. Veuillez créer ou rejoindre une organisation.');
+      return;
+    }
 
     // Security check: only owner/admin can access
     if (role === 'member') {
